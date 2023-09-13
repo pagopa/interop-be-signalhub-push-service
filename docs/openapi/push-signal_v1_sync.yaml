@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: SignalHub Pull Signal API Micro Service
+  title: Interoperability API Gateway Micro Service
   description: exposes the API for interacting with interoperability features
   version: '1.0'
   contact:
@@ -11,10 +11,10 @@ info:
   x-api-id: an x-api-id
   x-summary: an x-summary
 servers:
-  - url: '/api/1.0'
+  - url: '/api-gateway/1.0'
     description: This service is the interoperability API gateway
 tags:
-  - name: pull-signal
+  - name: gateway
     description: Everything about your APIs
     externalDocs:
       description: Find out more
@@ -27,39 +27,28 @@ tags:
 security:
   - bearerAuth: []
 paths:
-  '/pull-signal/{eServiceId}':
-    get:
+  '/push-signal':
+    post:
       tags:
-        - pull-signal
-      summary: Get a list of signals
-      description: Retrieve a list o signals on a specific eservice starting from indexSignal 
-      operationId: pullSignal
+        - gateway
+      summary: Insert signals
+      description: Insert a signal
+      operationId: pushSignal
       security:
         - bearerAuth: []
-      parameters:
-        - name: eServiceId
-          in: path
-          description: id of the eservice on witch retrieve signals
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: lastSignalId
-          in: query
-          description: signal index from which to search
-          required: true
-          schema:
-            type: integer
-            format: int64
-            default: 0
-
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignalRequest'
       responses:
         '200':
-          description: Full content
+          description: signal inteserted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SignalList'
+                $ref: '#/components/schemas/Signal'
           headers:
             'X-Rate-Limit-Limit':
               schema:
@@ -73,34 +62,6 @@ paths:
               schema:
                 type: integer
               description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
-            'X-Last-Signal-Index':
-              schema:
-                type: integer
-              description: Last signal index
-            
-        '206':
-          description: Partial content
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SignalList'
-          headers:
-            'X-Rate-Limit-Limit':
-              schema:
-                type: integer
-              description: Max allowed requests within time interval
-            'X-Rate-Limit-Remaining':
-              schema:
-                type: integer
-              description: Remaining requests within time interval
-            'X-Rate-Limit-Interval':
-              schema:
-                type: integer
-              description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
-            'X-Last-Signal-Index':
-              schema:
-                type: integer
-              description: Last signal index
         '400':
           description: Bad request
           content:
@@ -126,40 +87,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-          headers:
-            'X-Rate-Limit-Limit':
-              schema:
-                type: integer
-              description: Max allowed requests within time interval
-            'X-Rate-Limit-Remaining':
-              schema:
-                type: integer
-              description: Remaining requests within time interval
-            'X-Rate-Limit-Interval':
-              schema:
-                type: integer
-              description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
         '403':
           description: Forbidden
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
-          headers:
-            'X-Rate-Limit-Limit':
-              schema:
-                type: integer
-              description: Max allowed requests within time interval
-            'X-Rate-Limit-Remaining':
-              schema:
-                type: integer
-              description: Remaining requests within time interval
-            'X-Rate-Limit-Interval':
-              schema:
-                type: integer
-              description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
-        '404':
-          description: Request not found
           content:
             application/problem+json:
               schema:
@@ -196,13 +125,14 @@ paths:
               schema:
                 type: integer
               description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
+  
 components:
   schemas:
-    Signal:
+    SignalRequest:
       type: object
       additionalProperties: false
-      title: Signal
-      description: Signal
+      title: SignalRequest
+      description: represents the details of a verified attribute bound to the agreement.
       properties:
         signalType:
           $ref: '#/components/schemas/SignalType'
@@ -214,28 +144,24 @@ components:
           maxLength: 500
         objectType:
           type: string
-          description: object type
+          description: object type. In case of seed update this claim must by set to 'seedUpdate'
           pattern: '^[a-zA-Z0-9\s\-_]+$'
           minLength: 0
           maxLength: 500
-        eServiceId:
+        eserviceId:
           type: string
           format: uuid
           description: eservice Id
-        signalId:
-          type: integer
-          format: int64
-          description: signal id
         indexSignal:
-          type: integer
-          format: int64
-          description: internal signal id
-    SignalList:
-      title: SignalList
-      description: SignalList
-      type: array
-      items: 
-        $ref: '#/components/schemas/Signal'
+          type: number
+          example: 1
+          description: unique index of eserviceId
+      required:
+        - objectId
+        - signalType
+        - eserviceId
+        - objectType
+        - indexSignal
     SignalType:
       type: string
       description: type of signal
@@ -243,6 +169,7 @@ components:
         - CREATE
         - UPDATE
         - DELETE
+        - SEEDUPDATE
     Problem:
       properties:
         type:
@@ -284,6 +211,16 @@ components:
         - status
         - title
         - errors
+    Signal:
+      type: object
+      additionalProperties: false
+      title: Signal
+      description: represents the id of the signal just entered.
+      properties:
+        signalId:
+          type: string
+          format: uuid
+          description: signal id
     ProblemError:
       properties:
         code:
