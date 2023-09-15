@@ -3,13 +3,16 @@ package it.pagopa.interop.signalhub.push.service.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.AllArgsConstructor;
-import lombok.CustomLog;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-@CustomLog
+
+
+
+@Slf4j
 @Component
 @AllArgsConstructor
 public class SecurityFilter implements WebFilter {
