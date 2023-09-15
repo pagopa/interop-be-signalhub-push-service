@@ -209,10 +209,10 @@
 								<reactive>true</reactive>
 								<skipDefaultInterface>false</skipDefaultInterface>
 								<useTags>true</useTags>
-								<basePackage>${project.groupId}.platform.rest.v1</basePackage>
-								<modelPackage>${project.groupId}.platform.rest.v1.dto</modelPackage>
-								<apiPackage>${project.groupId}.platform.rest.v1.api</apiPackage>
-								<configPackage>${project.groupId}.platform.rest.v1.config</configPackage>
+								<basePackage>${project.groupId}.push.service.rest.v1</basePackage>
+								<modelPackage>${project.groupId}.push.service.dto</modelPackage>
+								<apiPackage>${project.groupId}.push.service.rest.v1.api</apiPackage>
+								<configPackage>${project.groupId}.push.service.rest.v1.config</configPackage>
 							</configOptions>
 						</configuration>
 					</execution>
