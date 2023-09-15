@@ -3,11 +3,21 @@ package it.pagopa.interop.signalhub.push.service.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 public class Utility {
+
     private Utility(){
         // private constructor
+    }
+
+    public static Mono<String> getFromContext(String key, String defaultValue){
+        return Mono.deferContextual(ctx -> {
+            String value = ctx.getOrDefault(key, defaultValue);
+            if (value == null) return Mono.empty();
+            return Mono.just(value);
+        });
     }
 
     public static <T> T jsonToObject(ObjectMapper objectMapper, String json, Class<T> tClass){
