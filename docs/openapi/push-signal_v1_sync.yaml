@@ -150,10 +150,10 @@ components:
           maxLength: 500
         eserviceId:
           type: string
-          format: uuid
           description: eservice Id
         indexSignal:
-          type: number
+          type: long
+          format: int32
           example: 1
           description: unique index of eserviceId
       required:
@@ -218,8 +218,8 @@ components:
       description: represents the id of the signal just entered.
       properties:
         signalId:
-          type: string
-          format: uuid
+          type: long
+          format: int32
           description: signal id
     ProblemError:
       properties:
