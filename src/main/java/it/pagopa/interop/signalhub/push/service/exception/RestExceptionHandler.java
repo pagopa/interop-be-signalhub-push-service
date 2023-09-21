@@ -3,7 +3,6 @@ package it.pagopa.interop.signalhub.push.service.exception;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import it.pagopa.interop.signalhub.push.service.dto.Problem;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
