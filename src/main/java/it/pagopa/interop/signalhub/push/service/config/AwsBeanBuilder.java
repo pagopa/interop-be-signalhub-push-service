@@ -35,20 +35,20 @@ public class AwsBeanBuilder {
     }
 
     @Bean
-    public SqsTemplate sqsTemplate() {
-        return SqsTemplate.builder().sqsAsyncClient(sqsAsyncClient())
+    public SqsTemplate sqsTemplate(SqsAsyncClient sqsAsyncClient) {
+        return SqsTemplate.builder().sqsAsyncClient(sqsAsyncClient)
                 .configure(options -> options.defaultQueue(signalHubPushConfig.getInternalQueueName()))
                 .build();
     }
 
     @Bean
-    public SqsMessageListenerContainerFactory<Object> defaultSqsListenerContainerFactory() {
+    public SqsMessageListenerContainerFactory<Object> defaultSqsListenerContainerFactory(SqsAsyncClient sqsAsyncClient) {
         return SqsMessageListenerContainerFactory
                 .builder()
                 .configure(options -> options
                         .maxConcurrentMessages(10)
                         .maxMessagesPerPoll(10))
-                .sqsAsyncClient(sqsAsyncClient())
+                .sqsAsyncClient(sqsAsyncClient)
                 .build();
     }
 
