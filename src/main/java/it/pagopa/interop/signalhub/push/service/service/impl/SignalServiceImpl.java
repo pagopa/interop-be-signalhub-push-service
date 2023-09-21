@@ -34,7 +34,7 @@ public class SignalServiceImpl implements SignalService {
     public Mono<Signal> pushSignal(String organizationId, SignalRequest signalRequest) {
         return eServiceRepository.findByOrganizationIdAndEServiceId(organizationId, signalRequest.getEserviceId().toString())
                 .switchIfEmpty(Mono.error(new PnGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage().concat(signalRequest.getEserviceId().toString()), HttpStatus.FORBIDDEN)))
-                .flatMap(eservice -> eServiceRepository.findBySignalIdAndEServiceId(signalRequest.getIndexSignal().toString(), signalRequest.getEserviceId()))
+                .flatMap(eservice -> eServiceRepository.findBySignalIdAndEServiceId(signalRequest.getIndexSignal().toString(), signalRequest.getEserviceId().toString()))
                 .switchIfEmpty(Mono.error(new PnGenericException(ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS, ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS.getMessage(), HttpStatus.BAD_REQUEST)))
                 .flatMap(eservice -> internalSqsProducer.push(signalMapper.toEvent(signalRequest)))
                 .map(signalEvent -> signalMapper.toSignal(signalEvent));
