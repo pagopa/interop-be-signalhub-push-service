@@ -3,34 +3,24 @@ info:
   title: Interoperability API Gateway Micro Service
   description: exposes the API for interacting with interoperability features
   version: '1.0'
-  contact:
-    name: API Support
-    url: 'http://www.example.com/support'
-    email: support@example.com
   termsOfService: 'http://swagger.io/terms/'
   x-api-id: an x-api-id
   x-summary: an x-summary
 servers:
-  - url: '/api-gateway/1.0'
+  - url: https://localhost:8080
     description: This service is the interoperability API gateway
 tags:
-  - name: gateway
+  - name: Gateway
     description: Everything about your APIs
-    externalDocs:
-      description: Find out more
-      url: 'http://swagger.io'
   - name: health
     description: Verify service status
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io
 security:
   - bearerAuth: []
 paths:
-  '/push-signal':
+  /push-signal:
     post:
       tags:
-        - gateway
+        - Gateway
       summary: Insert signals
       description: Insert a signal
       operationId: pushSignal
@@ -125,7 +115,7 @@ paths:
               schema:
                 type: integer
               description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
-  
+
 components:
   schemas:
     SignalRequest:
@@ -152,8 +142,8 @@ components:
           type: string
           description: eservice Id
         indexSignal:
-          type: long
-          format: int32
+          type: integer
+          format: int64
           example: 1
           description: unique index of eserviceId
       required:
@@ -218,8 +208,8 @@ components:
       description: represents the id of the signal just entered.
       properties:
         signalId:
-          type: long
-          format: int32
+          type: integer
+          format: int64
           description: signal id
     ProblemError:
       properties:
