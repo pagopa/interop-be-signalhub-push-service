@@ -5,6 +5,7 @@ import io.awspring.cloud.sqs.operations.SqsTemplate;
 import it.pagopa.interop.signalhub.push.service.queue.model.SignalEvent;
 import it.pagopa.interop.signalhub.push.service.utils.Utility;
 import lombok.AllArgsConstructor;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -18,9 +19,9 @@ public class InternalSqsProducer implements SqsProducer<SignalEvent> {
 
     @Override
     public Mono<SignalEvent> push(SignalEvent event) {
-        return Mono.fromFuture(this.sqsTemplate.sendAsync(
-                MessageBuilder.withPayload(convertToJson(event))
-        )).thenReturn(event);
+        Message<String> message = MessageBuilder.withPayload(convertToJson(event)).build();
+        return Mono.fromFuture(this.sqsTemplate.sendAsync(message))
+                .thenReturn(event);
     }
 
 

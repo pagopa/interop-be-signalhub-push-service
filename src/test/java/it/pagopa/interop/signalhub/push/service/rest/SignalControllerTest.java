@@ -1,40 +1,43 @@
 package it.pagopa.interop.signalhub.push.service.rest;
 
-import it.pagopa.interop.signalhub.push.service.LocalStackTestConfig;
+import it.pagopa.interop.signalhub.push.service.config.BaseTest;
+import it.pagopa.interop.signalhub.push.service.config.WithMockCustomUser;
 import it.pagopa.interop.signalhub.push.service.dto.Signal;
 import it.pagopa.interop.signalhub.push.service.dto.SignalRequest;
 import it.pagopa.interop.signalhub.push.service.service.SignalService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithSecurityContext;
+import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 
-@Import(LocalStackTestConfig.class)
-@ActiveProfiles("test")
-@WebFluxTest(controllers = {SignalController.class})
-class SignalControllerTest {
 
+class SignalControllerTest extends BaseTest.WithWebEnvironment {
     @Autowired
     private WebTestClient webTestClient;
     @MockBean
     private SignalService signalService;
 
     @Test
+    @WithMockCustomUser
     void pushSignal() {
         Signal signalResponse= new Signal();
         String path = "/push-signal";
         Mockito.when(signalService.pushSignal(Mockito.any(), Mockito.any()))
                 .thenReturn(Mono.just(signalResponse));
 
-        webTestClient.post()
+        webTestClient
+                .mutateWith(SecurityMockServerConfigurers.csrf())
+                .post()
                 .uri(uriBuilder -> uriBuilder.path(path)
                         .build())
+                .header(HttpHeaders.AUTHORIZATION, TOKEN_OK)
                 .bodyValue(getSignalRequest())
                 .exchange()
                 .expectStatus().isOk();
