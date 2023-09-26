@@ -8,6 +8,7 @@ import it.pagopa.interop.signalhub.push.service.mapper.SignalMapper;
 import it.pagopa.interop.signalhub.push.service.queue.model.SignalEvent;
 import it.pagopa.interop.signalhub.push.service.queue.producer.InternalSqsProducer;
 import it.pagopa.interop.signalhub.push.service.repository.EServiceRepository;
+import it.pagopa.interop.signalhub.push.service.repository.SignalRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,9 @@ class SignalServiceImplTest {
     @Mock
     private EServiceRepository eServiceRepository;
 
+    @Mock
+    private SignalRepository signalRepository;
+
 
     @Test
     void whenCallPushSignalAndCorrespondenceNotFound() {
@@ -54,7 +58,7 @@ class SignalServiceImplTest {
     void whenCallPushSignalAndSignalIdAlreadyExists() {
         SignalRequest signalRequest = getSignalRequest();
         Mockito.when(eServiceRepository.findByOrganizationIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
-        Mockito.when(eServiceRepository.findBySignalIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        Mockito.when(signalRepository.findBySignalIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
         StepVerifier.create(signalService.pushSignal("1234", signalRequest))
                 .expectErrorMatches((ex) -> {
                     assertTrue(ex instanceof PnGenericException);

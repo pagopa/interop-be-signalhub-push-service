@@ -7,6 +7,7 @@ import it.pagopa.interop.signalhub.push.service.exception.PnGenericException;
 import it.pagopa.interop.signalhub.push.service.mapper.SignalMapper;
 import it.pagopa.interop.signalhub.push.service.queue.producer.InternalSqsProducer;
 import it.pagopa.interop.signalhub.push.service.repository.EServiceRepository;
+import it.pagopa.interop.signalhub.push.service.repository.SignalRepository;
 import it.pagopa.interop.signalhub.push.service.service.SignalService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,9 @@ public class SignalServiceImpl implements SignalService {
     private EServiceRepository eServiceRepository;
 
     @Autowired
+    private SignalRepository signalRepository;
+
+    @Autowired
     private SignalMapper signalMapper;
 
     @Autowired
@@ -32,11 +36,16 @@ public class SignalServiceImpl implements SignalService {
 
     @Override
     public Mono<Signal> pushSignal(String organizationId, SignalRequest signalRequest) {
-        return eServiceRepository.findByOrganizationIdAndEServiceId(organizationId, signalRequest.getEserviceId().toString())
-                .switchIfEmpty(Mono.error(new PnGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage().concat(signalRequest.getEserviceId().toString()), HttpStatus.FORBIDDEN)))
-                .flatMap(eservice -> eServiceRepository.findBySignalIdAndEServiceId(signalRequest.getIndexSignal().toString(), signalRequest.getEserviceId()))
-                .switchIfEmpty(Mono.error(new PnGenericException(ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS, ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS.getMessage(), HttpStatus.BAD_REQUEST)))
-                .flatMap(eservice -> internalSqsProducer.push(signalMapper.toEvent(signalRequest)))
-                .map(signalEvent -> signalMapper.toSignal(signalEvent));
+        Signal signal= new Signal();
+        return eServiceRepository.findByOrganizationIdAndEServiceId(organizationId, signalRequest.getEserviceId())
+                .switchIfEmpty(Mono.error(new PnGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage().concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN)))
+                .flatMap(eservice -> signalRepository.findBySignalIdAndEServiceId(signalRequest.getIndexSignal(), signalRequest.getEserviceId()))
+                .flatMap(eservice -> {
+                    log.debug("eservice = {}, CORRESPONDENCE_NOT_FOUND", eservice);
+                    return Mono.error(new PnGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage().concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN));
+                }).switchIfEmpty(Mono.defer(() ->{
+                    log.debug("SignalRequest = {}, push signal", signalRequest);
+                    return internalSqsProducer.push(signalMapper.toEvent(signalRequest));
+                })).thenReturn(signalMapper.toSignal(signalRequest));
     }
 }

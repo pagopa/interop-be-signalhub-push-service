@@ -9,11 +9,9 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 public interface EServiceRepository extends ReactiveCrudRepository<EService, Long> {
 
-    @Query("SELECT * FROM EService WHERE eserviceId = :eserviceId AND organizationId = :organizationId")
+    @Query("SELECT * FROM ORGANIZATION_ESERVICE s WHERE s.eservice_id = :eserviceId AND s.organization_id = :organizationId")
     Mono<EService> findByOrganizationIdAndEServiceId(String organizationId, String eserviceId);
 
-    @Query("SELECT * FROM EService WHERE eserviceId = :eserviceId AND signalId = :signalId")
-    Mono<EService> findBySignalIdAndEServiceId(String signalId, String eserviceId);
 }
 
 
