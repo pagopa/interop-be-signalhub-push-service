@@ -23,7 +23,9 @@ public class SignalController implements GatewayApi {
                 .zipWith(signalRequest)
                 .flatMap(organizationAndSignalRequest ->
                     this.signalService.pushSignal(organizationAndSignalRequest.getT1(), organizationAndSignalRequest.getT2())
-                ).map(signalResponse -> ResponseEntity.status(HttpStatus.OK).body(signalResponse));
+                )
+               .map(signalResponse -> ResponseEntity.status(HttpStatus.OK).body(signalResponse));
+
 
     }
 }

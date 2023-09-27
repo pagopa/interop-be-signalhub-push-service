@@ -36,7 +36,6 @@ public class SignalServiceImpl implements SignalService {
 
     @Override
     public Mono<Signal> pushSignal(String organizationId, SignalRequest signalRequest) {
-        Signal signal= new Signal();
         return eServiceRepository.findByOrganizationIdAndEServiceId(organizationId, signalRequest.getEserviceId())
                 .switchIfEmpty(Mono.error(new PnGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage().concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN)))
                 .flatMap(eservice -> signalRepository.findBySignalIdAndEServiceId(signalRequest.getIndexSignal(), signalRequest.getEserviceId()))

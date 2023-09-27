@@ -1,9 +1,12 @@
 package it.pagopa.interop.signalhub.push.service.queue.model;
 
 import it.pagopa.interop.signalhub.push.service.dto.SignalType;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.math.BigDecimal;
 
+@Getter
+@Setter
 public class SignalEvent {
 
     private SignalType signalType;
@@ -14,6 +17,6 @@ public class SignalEvent {
 
     private String eserviceId;
 
-    private BigDecimal indexSignal;
+    private Long indexSignal;
 
 }
