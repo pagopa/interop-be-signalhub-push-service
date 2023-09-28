@@ -5,12 +5,10 @@ import it.pagopa.interop.signalhub.push.service.dto.SignalRequest;
 import it.pagopa.interop.signalhub.push.service.dto.SignalType;
 import it.pagopa.interop.signalhub.push.service.entities.EService;
 import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
-import it.pagopa.interop.signalhub.push.service.exception.PocGenericException;
+import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.mapper.SignalMapper;
-import it.pagopa.interop.signalhub.push.service.queue.producer.InternalSqsProducer;
 import it.pagopa.interop.signalhub.push.service.repository.EServiceRepository;
 import it.pagopa.interop.signalhub.push.service.repository.SignalRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,8 +48,8 @@ class SignalServiceImplTest {
         Mockito.when(eServiceRepository.findByOrganizationIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
         StepVerifier.create(signalService.pushSignal("1234", signalRequest))
                 .expectErrorMatches((ex) -> {
-                    assertTrue(ex instanceof PocGenericException);
-                    assertEquals(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ((PocGenericException) ex).getExceptionType());
+                    assertTrue(ex instanceof PDNDGenericException);
+                    assertEquals(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ((PDNDGenericException) ex).getExceptionType());
                     return true;
                 }).verify();
     }
@@ -64,8 +62,8 @@ class SignalServiceImplTest {
 
         StepVerifier.create(signalService.pushSignal("1234", signalRequest))
                 .expectErrorMatches((ex) -> {
-                    assertTrue(ex instanceof PocGenericException);
-                    assertEquals(ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS, ((PocGenericException) ex).getExceptionType());
+                    assertTrue(ex instanceof PDNDGenericException);
+                    assertEquals(ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS, ((PDNDGenericException) ex).getExceptionType());
                     return true;
                 }).verify();
     }
