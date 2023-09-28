@@ -4,6 +4,7 @@ import it.pagopa.interop.signalhub.push.service.config.BaseTest;
 import it.pagopa.interop.signalhub.push.service.config.WithMockCustomUser;
 import it.pagopa.interop.signalhub.push.service.dto.Signal;
 import it.pagopa.interop.signalhub.push.service.dto.SignalRequest;
+import it.pagopa.interop.signalhub.push.service.dto.SignalType;
 import it.pagopa.interop.signalhub.push.service.service.SignalService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -45,6 +46,7 @@ class SignalControllerTest extends BaseTest.WithWebEnvironment {
 
     private SignalRequest getSignalRequest(){
         SignalRequest request = new SignalRequest();
+        request.setSignalType(SignalType.CREATE);
         request.setEserviceId("123");
         request.setIndexSignal(Long.valueOf(1));
         request.setObjectId("test");

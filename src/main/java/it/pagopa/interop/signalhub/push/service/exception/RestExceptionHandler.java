@@ -18,8 +18,8 @@ public class RestExceptionHandler {
         log.error("Returning HTTP 400 Bad Request {}", e.getMessage());
     }
 
-    @ExceptionHandler(PnGenericException.class)
-    public Mono<ResponseEntity<Problem>> handleResponseEntityException(final PnGenericException exception){
+    @ExceptionHandler(PocGenericException.class)
+    public Mono<ResponseEntity<Problem>> handleResponseEntityException(final PocGenericException exception){
         log.warn(exception.toString());
         final Problem problem = new Problem();
         problem.setTitle(exception.getExceptionType().getTitle());
