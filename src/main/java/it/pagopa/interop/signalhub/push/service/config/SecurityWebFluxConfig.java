@@ -26,6 +26,8 @@ public class SecurityWebFluxConfig {
                 .authorizeExchange()
                 .anyExchange().authenticated()
                 .and()
+                .exceptionHandling()
+                .and()
                 .addFilterBefore(jwtFilter, SecurityWebFiltersOrder.HTTP_BASIC);
 
         return http.build();

@@ -7,7 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import it.pagopa.interop.signalhub.push.service.auth.JWTAuthManager;
 import it.pagopa.interop.signalhub.push.service.auth.JWTConverter;
 import it.pagopa.interop.signalhub.push.service.auth.JWTUtil;
-import it.pagopa.interop.signalhub.push.service.exception.PocGenericException;
+import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -85,7 +85,7 @@ public class JWTFilter implements WebFilter {
             Jwk jwk = jwkProvider.get(jwt.getKeyId());
             return jwk.getPublicKey();
         } catch (JwkException ex) {
-            throw new PocGenericException(JWT_NOT_VALID, JWT_NOT_VALID.getMessage(), HttpStatus.UNAUTHORIZED);
+            throw new PDNDGenericException(JWT_NOT_VALID, JWT_NOT_VALID.getMessage(), HttpStatus.UNAUTHORIZED);
         }
 
     }
