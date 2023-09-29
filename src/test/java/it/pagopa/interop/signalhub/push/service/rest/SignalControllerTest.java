@@ -48,7 +48,7 @@ class SignalControllerTest extends BaseTest.WithWebEnvironment {
         SignalRequest request = new SignalRequest();
         request.setSignalType(SignalType.CREATE);
         request.setEserviceId("123");
-        request.setIndexSignal(Long.valueOf(1));
+        request.setIndexSignal(Long.valueOf(2));
         request.setObjectId("test");
         request.setObjectType("test");
         return request;
