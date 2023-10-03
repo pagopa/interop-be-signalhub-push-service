@@ -3,7 +3,6 @@ package it.pagopa.interop.signalhub.push.service.mapper;
 import it.pagopa.interop.signalhub.push.service.dto.Signal;
 import it.pagopa.interop.signalhub.push.service.dto.SignalRequest;
 import it.pagopa.interop.signalhub.push.service.queue.model.SignalEvent;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mapstruct.factory.Mappers;

@@ -2,6 +2,7 @@ package it.pagopa.interop.signalhub.push.service.service.impl;
 
 import it.pagopa.interop.signalhub.push.service.dto.Signal;
 import it.pagopa.interop.signalhub.push.service.dto.SignalRequest;
+import it.pagopa.interop.signalhub.push.service.entities.EService;
 import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.mapper.SignalMapper;
@@ -12,6 +13,7 @@ import it.pagopa.interop.signalhub.push.service.service.SignalService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -47,4 +49,6 @@ public class SignalServiceImpl implements SignalService {
                     return internalSqsProducer.push(signalMapper.toEvent(signalRequest));
                 })).thenReturn(signalMapper.toSignal(signalRequest));
     }
+
+
 }
