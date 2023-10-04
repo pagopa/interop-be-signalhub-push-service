@@ -25,10 +25,24 @@ class SignalMapperTest {
     }
 
     @Test
+    void whenCallToEventAndSignalRequestIsNull() {
+        SignalRequest signalRequest= null;
+        SignalEvent signal= service.toEvent(signalRequest);
+        assertNull(signal);
+    }
+
+    @Test
     void toSignal() {
         SignalRequest signalRequest= new SignalRequest();
         signalRequest.setIndexSignal(1L);
         Signal signal= service.toSignal(signalRequest);
         assertEquals(signal.getSignalId(), signalRequest.getIndexSignal());
+    }
+
+    @Test
+    void whenCallToSignalAndSignalRequestIsNull() {
+        SignalRequest signalRequest= null;
+        Signal signal= service.toSignal(signalRequest);
+        assertNull(signal);
     }
 }

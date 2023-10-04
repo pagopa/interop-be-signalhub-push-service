@@ -7,6 +7,8 @@ import it.pagopa.interop.signalhub.push.service.entities.EService;
 import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.mapper.SignalMapper;
+import it.pagopa.interop.signalhub.push.service.queue.model.SignalEvent;
+import it.pagopa.interop.signalhub.push.service.queue.producer.InternalSqsProducer;
 import it.pagopa.interop.signalhub.push.service.repository.EServiceRepository;
 import it.pagopa.interop.signalhub.push.service.repository.SignalRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,10 @@ class SignalServiceImplTest {
 
     @Mock
     private EServiceRepository eServiceRepository;
+
+    @Mock
+    private InternalSqsProducer internalSqsProducer;
+
 
     @Mock
     private SignalRepository signalRepository;
@@ -69,14 +75,16 @@ class SignalServiceImplTest {
     }
 
     @Test
-    void whenCallPushSignalAndSignalIdAlreadyExist() {
+    void whenCallPushSignalAndReturnSignal() {
         SignalRequest signalRequest = getSignalRequest();
         EService eService= new EService();
         eService.setEserviceId("123");
         eService.setOrganizationId("123");
         Mockito.when(eServiceRepository.findByOrganizationIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.just(eService));
+        Mockito.when(signalRepository.findBySignalIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        Mockito.when(internalSqsProducer.push(Mockito.any())).thenReturn(Mono.just(new SignalEvent()));
 
-       assertNotNull(signalService.pushSignal("test", signalRequest));
+        assertNotNull(signalService.pushSignal("test", signalRequest).block());
     }
 
     private SignalRequest getSignalRequest(){
