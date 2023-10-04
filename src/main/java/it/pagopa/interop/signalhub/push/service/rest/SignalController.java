@@ -25,7 +25,5 @@ public class SignalController implements GatewayApi {
                     this.signalService.pushSignal(organizationAndSignalRequest.getT1(), organizationAndSignalRequest.getT2())
                 )
                .map(signalResponse -> ResponseEntity.status(HttpStatus.OK).body(signalResponse));
-
-
     }
 }

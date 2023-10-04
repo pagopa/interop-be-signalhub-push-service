@@ -10,7 +10,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 public interface EServiceRepository extends ReactiveCrudRepository<EService, Long> {
 
-    @Cacheable(value = "itemCache")
+    @Cacheable("redis-cache")
     @Query("SELECT * FROM ORGANIZATION_ESERVICE s WHERE s.eservice_id = :eserviceId AND s.organization_id = :organizationId")
     Mono<EService> findByOrganizationIdAndEServiceId(String organizationId, String eserviceId);
 

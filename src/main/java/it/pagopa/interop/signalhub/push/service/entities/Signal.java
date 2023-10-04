@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 @Setter
 @ToString
 @Table("SIGNAL")
+//@RedisHash("signal")
 public class Signal implements RedisSerializer {
 
     @Id
