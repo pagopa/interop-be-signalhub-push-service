@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,6 @@ import reactor.util.annotation.NonNull;
 
 @Slf4j
 @Configuration
-@Order(-2)
 @AllArgsConstructor
 public class PDNDErrorWebExceptionHandler implements ErrorWebExceptionHandler {
     private PDNDExceptionHelper helper;
@@ -29,11 +27,12 @@ public class PDNDErrorWebExceptionHandler implements ErrorWebExceptionHandler {
     public Mono<Void> handle(@NonNull ServerWebExchange serverWebExchange, @NonNull Throwable throwable) {
         DataBufferFactory bufferFactory = serverWebExchange.getResponse().bufferFactory();
         DataBuffer dataBuffer;
+        log.error("Error Internal : {}", throwable.getMessage(), throwable);
         try {
             Problem problem = this.helper.handle(throwable);
             serverWebExchange.getResponse().setStatusCode(HttpStatus.resolve(problem.getStatus()));
             dataBuffer = bufferFactory.wrap(this.objectMapper.writeValueAsBytes(problem));
-        } catch (JsonProcessingException ex) {
+        } catch (Exception ex) {
             log.error("cannot output problem", ex);
             dataBuffer = bufferFactory.wrap(this.helper.generateFallbackProblem().getBytes());
         }

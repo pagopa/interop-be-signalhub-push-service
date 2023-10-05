@@ -13,22 +13,27 @@ import java.sql.Timestamp;
 @Setter
 @ToString
 @Table("ORGANIZATION_ESERVICE")
-public class EService{
+public class EService {
+    public static final String COLUMN_ESERVICE_ID = "eservice_id";
+    public static final String COLUMN_ORGANIZATION_ID = "organization_id";
+    public static final String COLUMN_STATE = "state";
+    public static final String COLUMN_DATE_INSERT = "tmst_insert";
+    public static final String COLUMN_DATE_UPDATE = "tmst_last_edit";
 
     @Id
-    @Column("eservice_id")
+    @Column(COLUMN_ESERVICE_ID)
     private String eserviceId;
 
-    @Column("organization_id")
+    @Column(COLUMN_ORGANIZATION_ID)
     private String organizationId;
 
-    @Column("state")
+    @Column(COLUMN_STATE)
     private String state;
 
-    @Column("tmst_insert")
+    @Column(COLUMN_DATE_INSERT)
     private Timestamp tmstInsert;
 
-    @Column("tmst_last_edit")
+    @Column(COLUMN_DATE_UPDATE)
     private Timestamp tmstLastEdit;
 
 }
