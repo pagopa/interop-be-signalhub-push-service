@@ -1,6 +1,8 @@
 package it.pagopa.interop.signalhub.push.service.auth;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -17,14 +19,14 @@ public class JWTConverter implements Function<ServerWebExchange, Mono<DecodedJWT
         return Mono.justOrEmpty(serverWebExchange)
                 .map(JWTUtil::getAuthorizationPayload)
                 .filter(Objects::nonNull)
-                .switchIfEmpty(Mono.error(new AccessDeniedException(JWT_NOT_PRESENT.getTitle())))
+                .switchIfEmpty(Mono.error(new PDNDGenericException(JWT_NOT_PRESENT, JWT_NOT_PRESENT.getMessage(), HttpStatus.UNAUTHORIZED)))
                 .filter(JWTUtil.matchBearerLength())
-                .switchIfEmpty(Mono.error(new AccessDeniedException(JWT_NOT_VALID.getTitle())))
+                .switchIfEmpty(Mono.error(new PDNDGenericException(JWT_NOT_PRESENT, JWT_NOT_PRESENT.getMessage(), HttpStatus.UNAUTHORIZED)))
                 .map(JWTUtil.getBearerValue())
                 .filter(token -> !token.isEmpty())
-                .switchIfEmpty(Mono.error(new AccessDeniedException(JWT_EMPTY.getTitle())))
+                .switchIfEmpty(Mono.error(new PDNDGenericException(JWT_NOT_PRESENT, JWT_NOT_PRESENT.getMessage(), HttpStatus.UNAUTHORIZED)))
                 .map(JWTUtil.decodeJwt())
                 .filter(JWTUtil.matchType())
-                .switchIfEmpty(Mono.error(new AccessDeniedException(JWT_TYPE_INCORRECT.getTitle())));
+                .switchIfEmpty(Mono.error(new PDNDGenericException(JWT_NOT_PRESENT, JWT_NOT_PRESENT.getMessage(), HttpStatus.UNAUTHORIZED)));
     }
 }

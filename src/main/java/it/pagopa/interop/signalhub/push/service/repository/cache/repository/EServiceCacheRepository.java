@@ -37,7 +37,7 @@ public class EServiceCacheRepository {
 
     private Predicate<EServiceCache> correctEservice(String organizationId, String eserviceId){
         return eservice -> eservice.getEserviceId().equals(eserviceId) &&
-                                eservice.getOrganizationId().equals(organizationId);
+                eservice.getOrganizationId().equals(organizationId);
     }
 
 

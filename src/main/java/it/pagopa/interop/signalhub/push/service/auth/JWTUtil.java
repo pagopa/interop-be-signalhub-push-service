@@ -6,13 +6,20 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.common.net.HttpHeaders;
+import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
+import it.pagopa.interop.signalhub.push.service.exception.JWTException;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
+import it.pagopa.interop.signalhub.push.service.repository.JWTRepository;
+import it.pagopa.interop.signalhub.push.service.repository.cache.model.JWTCache;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -22,10 +29,12 @@ import java.util.function.Predicate;
 
 import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.JWT_NOT_VALID;
 
+@Slf4j
 public class JWTUtil {
     private static final String TYPE = "at+jwt";
 
     private static final String BEARER = "Bearer ";
+
 
     public static String getAuthorizationPayload(ServerWebExchange serverWebExchange) {
         return serverWebExchange.getRequest()
@@ -55,10 +64,9 @@ public class JWTUtil {
             JWTVerifier jwtVerifier = JWT.require(Algorithm.RSA256((RSAPublicKey) key, null))
                     .build();
             try {
-                //return jwtVerifier.verify(jwt);
-                return  jwt;
+                return jwtVerifier.verify(jwt);
             } catch (JWTVerificationException ex) {
-                throw new PDNDGenericException(JWT_NOT_VALID, ex.getMessage(), HttpStatus.UNAUTHORIZED);
+                throw new JWTException(JWT_NOT_VALID, ex.getMessage(), HttpStatus.UNAUTHORIZED, jwt.getToken());
             }
         };
     }

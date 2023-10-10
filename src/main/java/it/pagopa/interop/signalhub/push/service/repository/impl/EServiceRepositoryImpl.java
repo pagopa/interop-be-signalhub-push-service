@@ -4,6 +4,7 @@ import it.pagopa.interop.signalhub.push.service.entities.EService;
 import it.pagopa.interop.signalhub.push.service.mapper.EServiceMapper;
 import it.pagopa.interop.signalhub.push.service.repository.EServiceRepository;
 import it.pagopa.interop.signalhub.push.service.repository.cache.repository.EServiceCacheRepository;
+import it.pagopa.interop.signalhub.push.service.utils.Const;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
@@ -41,6 +42,7 @@ public class EServiceRepositoryImpl implements EServiceRepository {
         Query equals = Query.query(
                 where(EService.COLUMN_ORGANIZATION_ID).is(organizationId)
                         .and(where(EService.COLUMN_ESERVICE_ID).is(eserviceId))
+                        .and(where(EService.COLUMN_STATE).not(Const.STATE_ARCHIVIED))
         );
         return this.template.selectOne(equals, EService.class)
                 .switchIfEmpty(Mono.defer(()-> {

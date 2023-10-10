@@ -2,7 +2,6 @@ package it.pagopa.interop.signalhub.push.service.service.impl;
 
 import it.pagopa.interop.signalhub.push.service.dto.Signal;
 import it.pagopa.interop.signalhub.push.service.dto.SignalRequest;
-import it.pagopa.interop.signalhub.push.service.entities.EService;
 import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.mapper.SignalMapper;
