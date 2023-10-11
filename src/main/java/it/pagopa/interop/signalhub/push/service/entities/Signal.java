@@ -23,6 +23,9 @@ public class Signal {
     @Column("eservice_id")
     private String eserviceId;
 
+    @Column("correlation_id")
+    private String correlationId;
+
     @Column("signal_Id")
     private Long signalId;
 

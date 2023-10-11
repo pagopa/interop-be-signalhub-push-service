@@ -20,9 +20,9 @@ public class EServiceCacheRepository {
         return this.reactiveRedisOperations.opsForList().range("eservices", 0, -1);
     }
 
-    public Mono<EServiceCache> findById(String organization, String eservice) {
+    public Mono<EServiceCache> findById(String prducerId, String eservice) {
         return this.findAll()
-                .filter(correctEservice(organization, eservice))
+                .filter(correctEservice(prducerId, eservice))
                 .collectList()
                 .flatMap(finded -> {
                     if (finded.isEmpty()) return Mono.empty();
@@ -35,9 +35,9 @@ public class EServiceCacheRepository {
         return this.reactiveRedisOperations.opsForList().rightPush("eservices", eservice).thenReturn(eservice);
     }
 
-    private Predicate<EServiceCache> correctEservice(String organizationId, String eserviceId){
+    private Predicate<EServiceCache> correctEservice(String producerId, String eserviceId){
         return eservice -> eservice.getEserviceId().equals(eserviceId) &&
-                eservice.getOrganizationId().equals(organizationId);
+                eservice.getProducerId().equals(producerId);
     }
 
 

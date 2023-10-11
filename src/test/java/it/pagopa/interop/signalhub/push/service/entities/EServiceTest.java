@@ -23,10 +23,10 @@ class EServiceTest {
         assertEquals(eserviceId, eService.getEserviceId());
     }
     @Test
-    public void testOrganizationId() {
-        String organizationId = "1";
-        eService.setOrganizationId(organizationId);
-        assertEquals(organizationId, eService.getOrganizationId());
+    public void testProducerId() {
+        String producerId = "1";
+        eService.setProducerId(producerId);
+        assertEquals(producerId, eService.getProducerId());
     }
     @Test
     public void testState() {
