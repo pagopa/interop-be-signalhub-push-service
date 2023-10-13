@@ -68,7 +68,6 @@ public class JWTFilter implements WebFilter {
                 .flatMap(jwtDecoded -> jwtRepository.findByJWT(jwtDecoded))
                 .map(JWTUtil.verifyToken(this::getPublicKey))
                 .onErrorResume(JWTException.class, ex -> {
-                    log.info("{}, JWT CHE SALVO ", ex.getJwt());
                     return jwtRepository.saveOnCache(new JWTCache(ex.getJwt()))
                             .flatMap(item -> Mono.error(new PDNDGenericException(ex.getExceptionType(), ex.getMessage(), ex.getHttpStatus())));
                 })
