@@ -25,36 +25,36 @@ public class EServiceRepositoryImpl implements EServiceRepository {
     private final EServiceMapper mapper;
 
     @Override
-    public Mono<EService> findByOrganizationIdAndEServiceId(String organizationId, String eserviceId) {
+    public Mono<EService> findByProducerIdAndEServiceId(String producerId, String eserviceId) {
 
-        return this.cacheRepository.findById(organizationId, eserviceId)
-                .doOnNext(cache -> log.info("[{}-{}] EService in cache", organizationId, eserviceId))
+        return this.cacheRepository.findById(producerId, eserviceId)
+                .doOnNext(cache -> log.info("[{}-{}] EService in cache", producerId, eserviceId))
                 .switchIfEmpty(Mono.defer(() -> {
-                    log.info("[{}-{}] EService no in cache", organizationId, eserviceId);
+                    log.info("[{}-{}] EService no in cache", producerId, eserviceId);
                     return Mono.empty();
                 }))
                 .map(mapper::toEntity)
-                .switchIfEmpty(getFromDbAndSaveOnCache(organizationId, eserviceId));
+                .switchIfEmpty(getFromDbAndSaveOnCache(producerId, eserviceId));
 
     }
 
-    private Mono<EService> getFromDbAndSaveOnCache(String organizationId, String eserviceId){
+    private Mono<EService> getFromDbAndSaveOnCache(String producerId, String eserviceId){
         Query equals = Query.query(
-                where(EService.COLUMN_ORGANIZATION_ID).is(organizationId)
+                where(EService.COLUMN_PRODUCER_ID).is(producerId)
                         .and(where(EService.COLUMN_ESERVICE_ID).is(eserviceId))
                         .and(where(EService.COLUMN_STATE).not(Const.STATE_ARCHIVIED))
         );
         return this.template.selectOne(equals, EService.class)
                 .switchIfEmpty(Mono.defer(()-> {
-                    log.info("[{}-{}] EService not founded into DB", organizationId, eserviceId);
+                    log.info("[{}-{}] EService not founded into DB", producerId, eserviceId);
                     return Mono.empty();
                 }))
                 .doOnNext(entity ->
-                        log.info("[{}-{}] EService founded into DB", organizationId, eserviceId)
+                        log.info("[{}-{}] EService founded into DB", producerId, eserviceId)
                 )
                 .flatMap(entity -> this.cacheRepository.save(mapper.toCache(entity)))
                 .doOnNext(cacheEntity ->
-                        log.info("[{}-{}] EService saved on cache", organizationId, eserviceId)
+                        log.info("[{}-{}] EService saved on cache", producerId, eserviceId)
                 )
                 .map(mapper::toEntity);
     }

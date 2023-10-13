@@ -12,10 +12,10 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @ToString
-@Table("ORGANIZATION_ESERVICE")
+@Table("ESERVICE")
 public class EService {
     public static final String COLUMN_ESERVICE_ID = "eservice_id";
-    public static final String COLUMN_ORGANIZATION_ID = "organization_id";
+    public static final String COLUMN_PRODUCER_ID = "producer_id";
     public static final String COLUMN_STATE = "state";
     public static final String COLUMN_DATE_INSERT = "tmst_insert";
     public static final String COLUMN_DATE_UPDATE = "tmst_last_edit";
@@ -24,8 +24,8 @@ public class EService {
     @Column(COLUMN_ESERVICE_ID)
     private String eserviceId;
 
-    @Column(COLUMN_ORGANIZATION_ID)
-    private String organizationId;
+    @Column(COLUMN_PRODUCER_ID)
+    private String producerId;
 
     @Column(COLUMN_STATE)
     private String state;

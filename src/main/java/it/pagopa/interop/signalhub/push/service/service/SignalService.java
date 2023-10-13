@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 public interface SignalService {
 
-    Mono<Signal> pushSignal (String organizationId, SignalRequest signalRequest );
+    Mono<Signal> pushSignal (String producerId, SignalRequest signalRequest );
 
 
 }

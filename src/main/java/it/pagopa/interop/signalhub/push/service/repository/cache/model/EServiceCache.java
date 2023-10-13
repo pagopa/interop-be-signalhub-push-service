@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @RedisHash("eservices")
 public class EServiceCache {
     private String eserviceId;
-    private String organizationId;
+    private String producerId;
     private String state;
     private Timestamp tmstInsert;
     private Timestamp tmstLastEdit;
