@@ -22,13 +22,14 @@ public class SecurityWebFluxConfig {
 
         http.csrf().disable();
 
-        http
+        http.authorizeExchange()
+                .pathMatchers("/actuator/health")
+                .permitAll()
+                .and()
+                .addFilterAt(jwtFilter, SecurityWebFiltersOrder.FIRST)
                 .authorizeExchange()
-                .anyExchange().authenticated()
-                .and()
-                .exceptionHandling()
-                .and()
-                .addFilterBefore(jwtFilter, SecurityWebFiltersOrder.HTTP_BASIC);
+                .anyExchange()
+                .authenticated();
 
         return http.build();
     }
