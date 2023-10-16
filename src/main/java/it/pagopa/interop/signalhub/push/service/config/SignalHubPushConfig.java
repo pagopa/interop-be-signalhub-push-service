@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "poc.signal-hub")
+@ConfigurationProperties(prefix = "pdnd.signal-hub")
 public class SignalHubPushConfig {
-
-    private String internalQueueName;
 
 }

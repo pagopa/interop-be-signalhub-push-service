@@ -1,6 +1,7 @@
 package it.pagopa.interop.signalhub.push.service.queue.producer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.awspring.cloud.sqs.operations.SendResult;
 import io.awspring.cloud.sqs.operations.SqsTemplate;
 import it.pagopa.interop.signalhub.push.service.queue.model.SignalEvent;
 import it.pagopa.interop.signalhub.push.service.utils.Utility;
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
+
+import java.util.HashMap;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @AllArgsConstructor

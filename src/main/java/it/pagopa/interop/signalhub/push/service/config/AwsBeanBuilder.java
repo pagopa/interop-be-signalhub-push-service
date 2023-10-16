@@ -22,22 +22,20 @@ import java.net.URI;
 public class AwsBeanBuilder {
 
     private final AwsPropertiesConfig props;
-    private final SignalHubPushConfig signalHubPushConfig;
 
-    public AwsBeanBuilder(AwsPropertiesConfig props, SignalHubPushConfig signalHubPushConfig) {
+    public AwsBeanBuilder(AwsPropertiesConfig props) {
         this.props = props;
-        this.signalHubPushConfig = signalHubPushConfig;
     }
 
     @Bean
     public SqsAsyncClient sqsAsyncClient() {
-        return configureBuilder(SqsAsyncClient.builder(), props.getEndpointUrlSqs());
+        return configureBuilder(SqsAsyncClient.builder(), props.getSqsEndpoint());
     }
 
     @Bean
     public SqsTemplate sqsTemplate(SqsAsyncClient sqsAsyncClient) {
         return SqsTemplate.builder().sqsAsyncClient(sqsAsyncClient)
-                .configure(options -> options.defaultQueue(signalHubPushConfig.getInternalQueueName()))
+                .configure(options -> options.defaultQueue(props.getInternalQueueName()))
                 .build();
     }
 
