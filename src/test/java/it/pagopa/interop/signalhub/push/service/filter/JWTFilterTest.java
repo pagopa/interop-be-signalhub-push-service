@@ -7,6 +7,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import it.pagopa.interop.signalhub.push.service.auth.JWTAuthManager;
 import it.pagopa.interop.signalhub.push.service.auth.JWTConverter;
+import it.pagopa.interop.signalhub.push.service.auth.JWTUtil;
 import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.repository.JWTRepository;
