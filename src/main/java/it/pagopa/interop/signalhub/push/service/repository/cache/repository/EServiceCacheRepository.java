@@ -17,12 +17,9 @@ import java.util.function.Predicate;
 public class EServiceCacheRepository {
     private final ReactiveRedisOperations<String, EServiceCache> reactiveRedisOperations;
 
-    private Flux<EServiceCache> findAll(){
-        return this.reactiveRedisOperations.opsForList().range("eservices", 0, -1);
-    }
 
     public Mono<EServiceCache> findById(String prducerId, String eservice) {
-        return this.findAll()
+        return this.reactiveRedisOperations.opsForList().range(eservice, 0, -1)
                 .filter(correctEservice(prducerId, eservice))
                 .collectList()
                 .flatMap(finded -> {
@@ -33,7 +30,7 @@ public class EServiceCacheRepository {
 
 
     public Mono<EServiceCache> save(EServiceCache eservice){
-        return this.reactiveRedisOperations.opsForList().rightPush("eservices", eservice).thenReturn(eservice);
+        return this.reactiveRedisOperations.opsForList().rightPush(eservice.getEserviceId(), eservice).thenReturn(eservice);
     }
 
     private Predicate<EServiceCache> correctEservice(String producerId, String eserviceId){
