@@ -28,15 +28,18 @@ class JWTCacheRepositoryTest {
     @Mock
     private ReactiveListOperations<String, JWTCache> listOperations;
 
+    private JWTCache jwtCache;
+
     @BeforeEach
     void inizialize(){
+        jwtCache= new JWTCache();
+        jwtCache.setJwt("jwt");
         Mockito.when(reactiveRedisOperations.opsForList()).thenReturn(listOperations);
     }
 
     @Test
     void findById() {
-        JWTCache jwtCache= new JWTCache();
-        jwtCache.setJwt("jwt");
+
         Mockito.when(reactiveRedisOperations.opsForList().range(Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong())).thenReturn(Flux.just(jwtCache));
         assertNotNull(jwtCacheRepository.findById("jwt").block());
     }
@@ -50,6 +53,6 @@ class JWTCacheRepositoryTest {
     @Test
     void save() {
         Mockito.when(reactiveRedisOperations.opsForList().rightPush(Mockito.anyString(), Mockito.any())).thenReturn(Mono.just(1l));
-        assertNotNull(jwtCacheRepository.save(new JWTCache()).block());
+        assertNotNull(jwtCacheRepository.save(jwtCache).block());
     }
 }

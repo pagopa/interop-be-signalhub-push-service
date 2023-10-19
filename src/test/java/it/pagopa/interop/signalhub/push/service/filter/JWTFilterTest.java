@@ -35,8 +35,6 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class JWTFilterTest {

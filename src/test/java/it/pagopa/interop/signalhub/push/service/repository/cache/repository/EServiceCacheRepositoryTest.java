@@ -26,16 +26,18 @@ class EServiceCacheRepositoryTest {
     @Mock
     private ReactiveListOperations<String, EServiceCache> listOperations;
 
+    private EServiceCache eServiceCache;
+
     @BeforeEach
     void inizialize(){
+        eServiceCache= new EServiceCache();
+        eServiceCache.setEserviceId("123");
+        eServiceCache.setProducerId("123");
         Mockito.when(reactiveRedisOperations.opsForList()).thenReturn(listOperations);
     }
 
     @Test
     void findById() {
-        EServiceCache eServiceCache= new EServiceCache();
-        eServiceCache.setEserviceId("123");
-        eServiceCache.setProducerId("123");
         Mockito.when(reactiveRedisOperations.opsForList().range(Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong())).thenReturn(Flux.just(eServiceCache));
         assertNotNull(eServiceCacheRepository.findById("123", "123").block());
     }
@@ -49,6 +51,6 @@ class EServiceCacheRepositoryTest {
     @Test
     void save() {
         Mockito.when(reactiveRedisOperations.opsForList().rightPush(Mockito.anyString(), Mockito.any())).thenReturn(Mono.just(1l));
-        assertNotNull(eServiceCacheRepository.save(new EServiceCache()).block());
+        assertNotNull(eServiceCacheRepository.save(eServiceCache).block());
     }
 }

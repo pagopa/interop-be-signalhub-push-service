@@ -4,9 +4,9 @@ package it.pagopa.interop.signalhub.push.service.repository.cache.repository;
 import it.pagopa.interop.signalhub.push.service.repository.cache.model.EServiceCache;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Predicate;
@@ -19,12 +19,11 @@ public class EServiceCacheRepository {
 
 
     public Mono<EServiceCache> findById(String prducerId, String eservice) {
-        return this.reactiveRedisOperations.opsForList().range(eservice, 0, -1)
+        return this.reactiveRedisOperations.opsForValue().get(eservice)
                 .filter(correctEservice(prducerId, eservice))
-                .collectList()
                 .flatMap(finded -> {
-                    if (finded.isEmpty()) return Mono.empty();
-                    return Mono.just(finded.get(finded.size()-1));
+                    if (ObjectUtils.isEmpty(finded)) return Mono.empty();
+                    return Mono.just(finded);
                 });
     }
 
