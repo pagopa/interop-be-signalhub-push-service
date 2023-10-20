@@ -29,7 +29,7 @@ public class EServiceCacheRepository {
 
 
     public Mono<EServiceCache> save(EServiceCache eservice){
-        return this.reactiveRedisOperations.opsForList().rightPush(eservice.getEserviceId(), eservice).thenReturn(eservice);
+        return this.reactiveRedisOperations.opsForValue().set(eservice.getEserviceId(), eservice).thenReturn(eservice);
     }
 
     private Predicate<EServiceCache> correctEservice(String producerId, String eserviceId){

@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.ReactiveListOperations;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
+import org.springframework.data.redis.core.ReactiveValueOperations;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +25,7 @@ class EServiceCacheRepositoryTest {
     private ReactiveRedisOperations<String, EServiceCache> reactiveRedisOperations;
 
     @Mock
-    private ReactiveListOperations<String, EServiceCache> listOperations;
+    private ReactiveValueOperations<String, EServiceCache> valueOperations;
 
     private EServiceCache eServiceCache;
 
@@ -33,24 +34,24 @@ class EServiceCacheRepositoryTest {
         eServiceCache= new EServiceCache();
         eServiceCache.setEserviceId("123");
         eServiceCache.setProducerId("123");
-        Mockito.when(reactiveRedisOperations.opsForList()).thenReturn(listOperations);
+        Mockito.when(reactiveRedisOperations.opsForValue()).thenReturn(valueOperations);
     }
 
     @Test
     void findById() {
-        Mockito.when(reactiveRedisOperations.opsForList().range(Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong())).thenReturn(Flux.just(eServiceCache));
+        Mockito.when(reactiveRedisOperations.opsForValue().get(Mockito.anyString())).thenReturn(Mono.just(eServiceCache));
         assertNotNull(eServiceCacheRepository.findById("123", "123").block());
     }
 
     @Test
     void findByIdButReturnNull() {
-        Mockito.when(reactiveRedisOperations.opsForList().range(Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong())).thenReturn(Flux.empty());
+        Mockito.when(reactiveRedisOperations.opsForValue().get(Mockito.anyString())).thenReturn(Mono.empty());
         assertNull(eServiceCacheRepository.findById("123", "123").block());
     }
 
     @Test
     void save() {
-        Mockito.when(reactiveRedisOperations.opsForList().rightPush(Mockito.anyString(), Mockito.any())).thenReturn(Mono.just(1l));
+        Mockito.when(reactiveRedisOperations.opsForValue().set(Mockito.anyString(), Mockito.any())).thenReturn(Mono.just(true));
         assertNotNull(eServiceCacheRepository.save(eServiceCache).block());
     }
 }
