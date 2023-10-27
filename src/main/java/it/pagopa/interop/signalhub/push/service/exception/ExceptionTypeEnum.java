@@ -11,7 +11,8 @@ public enum ExceptionTypeEnum {
     JWT_EMPTY("JWT_EMPTY", "Il vaucher passato è vuoto"),
     JWT_NOT_PRESENT("JWT_NOT_PRESENT", "Il vaucher non è stato passato"),
     GENERIC_ERROR("GENERIC_ERROR", "Si è verificato un errore interno"),
-    SIGNALID_ALREADY_EXISTS("SIGNALID_ALREADY_EXISTS", "Esiste già un signalId per il determinato servizio");
+    SIGNALID_ALREADY_EXISTS("SIGNALID_ALREADY_EXISTS", "Esiste già un signalId per il determinato servizio"),
+    ESERVICE_STATUS_IS_NOT_ACTIVE("ESERVICE_STATUS_IS_NOT_ACTIVE", "Lo stato del servizio è diverso da ACTIVE. EServiceId: ");
 
     private final String title;
     private final String message;

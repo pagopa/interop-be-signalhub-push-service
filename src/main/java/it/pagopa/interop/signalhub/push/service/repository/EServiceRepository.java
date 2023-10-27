@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 public interface EServiceRepository {
 
 
-    Mono<EService> findByProducerIdAndEServiceId(String producerId, String eserviceId);
+    Mono<EService> findByProducerIdAndEServiceId(String producerId, String eserviceId, String descriptorId);
 
 }
 

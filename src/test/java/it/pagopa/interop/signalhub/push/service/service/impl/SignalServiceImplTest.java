@@ -51,7 +51,7 @@ class SignalServiceImplTest {
     @Test
     void whenCallPushSignalAndCorrespondenceNotFound() {
         SignalRequest signalRequest = getSignalRequest();
-        Mockito.when(eServiceRepository.findByProducerIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceId(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
         StepVerifier.create(signalService.pushSignal("1234", signalRequest))
                 .expectErrorMatches((ex) -> {
                     assertTrue(ex instanceof PDNDGenericException);
@@ -63,7 +63,7 @@ class SignalServiceImplTest {
     @Test
     void whenCallPushSignalAndSignalIdAlreadyExists() {
         SignalRequest signalRequest = getSignalRequest();
-        Mockito.when(eServiceRepository.findByProducerIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceId(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
         Mockito.when(signalRepository.findBySignalIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
 
         StepVerifier.create(signalService.pushSignal("1234", signalRequest))
@@ -80,7 +80,7 @@ class SignalServiceImplTest {
         EService eService= new EService();
         eService.setEserviceId("123");
         eService.setProducerId("123");
-        Mockito.when(eServiceRepository.findByProducerIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.just(eService));
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceId(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.just(eService));
         Mockito.when(signalRepository.findBySignalIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
         Mockito.when(internalSqsProducer.push(Mockito.any())).thenReturn(Mono.just(new SignalEvent()));
 

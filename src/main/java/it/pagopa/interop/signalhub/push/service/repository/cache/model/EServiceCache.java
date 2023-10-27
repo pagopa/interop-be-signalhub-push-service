@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 public class EServiceCache {
     private String eserviceId;
     private String producerId;
+    private String descriptorId;
     private String state;
     private Timestamp tmstInsert;
     private Timestamp tmstLastEdit;
