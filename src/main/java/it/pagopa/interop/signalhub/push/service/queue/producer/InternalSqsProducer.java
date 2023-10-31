@@ -16,7 +16,7 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 public class InternalSqsProducer implements SqsProducer<SignalEvent> {
-    private SqsTemplate sqsTemplate;
+    private final SqsTemplate sqsTemplate;
     private final ObjectMapper objectMapper;
 
 
