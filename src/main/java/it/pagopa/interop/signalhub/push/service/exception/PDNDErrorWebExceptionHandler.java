@@ -1,6 +1,5 @@
 package it.pagopa.interop.signalhub.push.service.exception;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.pagopa.interop.signalhub.push.service.dto.Problem;
 import lombok.AllArgsConstructor;
