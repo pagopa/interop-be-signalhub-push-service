@@ -35,10 +35,10 @@ public class JWTRepositoryImpl implements JWTRepository {
     public Mono<DecodedJWT> findByJWT(DecodedJWT jwt) {
 
         return this.cacheRepository.findById(jwt.getToken())
-                .doOnNext(cache -> log.info("[{}] JWT in cache", jwt.getToken()))
+                .doOnNext(cache -> log.debug("JWT in cache"))
                 .flatMap(jwtCache -> Mono.error(new PDNDGenericException(JWT_NOT_VALID, JWT_NOT_VALID.getMessage(), HttpStatus.UNAUTHORIZED)))
                 .switchIfEmpty(Mono.defer(() -> {
-                    log.info("[{}] JWT no in cache", jwt.getToken());
+                    log.debug("JWT no in cache");
                     return Mono.just(jwt);
                 })).thenReturn(jwt);
 
@@ -47,7 +47,7 @@ public class JWTRepositoryImpl implements JWTRepository {
     public Mono<JWTCache> saveOnCache(JWTCache jwtCache){
         return this.cacheRepository.save(jwtCache)
                 .doOnNext(cacheEntity ->
-                        log.info("[{}-{}] jwt saved on cache", jwtCache.getJwt())
+                        log.info("JWT saved on cache")
                 );
     }
 }
