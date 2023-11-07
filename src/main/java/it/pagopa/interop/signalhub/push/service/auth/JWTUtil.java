@@ -5,21 +5,15 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.google.common.net.HttpHeaders;
-import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.JWTException;
-import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
-import it.pagopa.interop.signalhub.push.service.repository.JWTRepository;
-import it.pagopa.interop.signalhub.push.service.repository.cache.model.JWTCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -32,7 +26,6 @@ import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEn
 @Slf4j
 public class JWTUtil {
     private static final String TYPE = "at+jwt";
-
     private static final String BEARER = "Bearer ";
 
 
@@ -47,7 +40,7 @@ public class JWTUtil {
     }
 
     public static Predicate<DecodedJWT> matchType(){
-        return jwt -> (StringUtils.equals(jwt.getType(), TYPE));
+        return jwt -> (StringUtils.equals(jwt.getType(), TYPE) );
     }
 
     public static Function<String, String> getBearerValue(){
@@ -70,6 +63,8 @@ public class JWTUtil {
             }
         };
     }
+
+
     public static Authentication getAuthenticationJwt(DecodedJWT jwt) {
         String organizationId = jwt.getClaim("organizationId").asString();
         return new UsernamePasswordAuthenticationToken(organizationId, null, List.of(new SimpleGrantedAuthority("ORGANIZATION")));

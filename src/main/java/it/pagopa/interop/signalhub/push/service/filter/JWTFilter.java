@@ -4,7 +4,6 @@ import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkException;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.netty.util.internal.StringUtil;
 import it.pagopa.interop.signalhub.push.service.auth.JWTAuthManager;
 import it.pagopa.interop.signalhub.push.service.auth.JWTConverter;
 import it.pagopa.interop.signalhub.push.service.auth.JWTUtil;
@@ -12,11 +11,9 @@ import it.pagopa.interop.signalhub.push.service.exception.JWTException;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.repository.JWTRepository;
 import it.pagopa.interop.signalhub.push.service.repository.cache.model.JWTCache;
-import it.pagopa.interop.signalhub.push.service.repository.cache.repository.JWTCacheRepository;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -33,7 +30,6 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import javax.validation.constraints.NotNull;
 import java.security.PublicKey;
 import java.util.function.Function;
 
@@ -41,34 +37,33 @@ import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEn
 
 @Profile("!test")
 @Slf4j
+@AllArgsConstructor
 @Configuration
 public class JWTFilter implements WebFilter {
     private final Function<ServerWebExchange, Mono<DecodedJWT>> jwtDecoded = new JWTConverter();
     private final ReactiveAuthenticationManager reactiveAuthManager = new JWTAuthManager();
     private final ServerSecurityContextRepository securityContextRepository = NoOpServerSecurityContextRepository.getInstance();
 
-    @Autowired
     private ServerAuthenticationSuccessHandler authSuccessHandler;
-    @Autowired
     private JwkProvider jwkProvider;
-    @Autowired
     private JWTRepository jwtRepository;
 
 
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchangeRequest, @NotNull WebFilterChain chain) {
+    public Mono<Void> filter(@NonNull ServerWebExchange exchangeRequest, @NonNull WebFilterChain chain) {
         if (exchangeRequest.getRequest().getHeaders().get("Authorization") == null) {
             return chain.filter(exchangeRequest);
         }
 
         return Mono.justOrEmpty(exchangeRequest)
                 .doOnNext(exchange -> log.info("Start JWT filter validation"))
-                .flatMap(exchange -> jwtDecoded.apply(exchangeRequest))
-                .doOnNext(jwt -> log.info("Jwt decoded"))
+                .flatMap(jwtDecoded)
+                .doOnNext(jwt -> log.info("JWT decoded"))
                 .switchIfEmpty(chain.filter(exchangeRequest).then(Mono.empty()))
                 .doOnNext(jwt -> log.info("JWT is valid ?"))
-                .flatMap(jwtDecoded -> jwtRepository.findByJWT(jwtDecoded))
+                .flatMap(jwtRepository::findByJWT)
+
                 .map(JWTUtil.verifyToken(this::getPublicKey))
                 .onErrorResume(JWTException.class, ex -> {
                     return jwtRepository.saveOnCache(new JWTCache(ex.getJwt()))

@@ -1,9 +1,9 @@
 package it.pagopa.interop.signalhub.push.service.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.pagopa.interop.signalhub.push.service.dto.Problem;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import it.pagopa.interop.signalhub.push.service.dto.Problem;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.buffer.DataBuffer;

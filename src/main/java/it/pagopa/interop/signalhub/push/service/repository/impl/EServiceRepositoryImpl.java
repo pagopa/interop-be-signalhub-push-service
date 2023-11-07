@@ -13,7 +13,6 @@ import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
-
 import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.ESERVICE_STATUS_IS_NOT_ACTIVE;
 import static org.springframework.data.relational.core.query.Criteria.where;
 
