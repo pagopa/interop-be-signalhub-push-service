@@ -21,18 +21,10 @@ import reactor.core.publisher.Mono;
 @Service
 @AllArgsConstructor
 public class SignalServiceImpl implements SignalService {
-
-    @Autowired
-    private EServiceRepository eServiceRepository;
-
-    @Autowired
-    private SignalRepository signalRepository;
-
-    @Autowired
-    private SignalMapper signalMapper;
-
-    @Autowired
-    private InternalSqsProducer internalSqsProducer;
+    private final EServiceRepository eServiceRepository;
+    private final SignalRepository signalRepository;
+    private final SignalMapper signalMapper;
+    private final InternalSqsProducer internalSqsProducer;
 
     @Override
     public Mono<Signal> pushSignal(String producerId, SignalRequest signalRequest) {

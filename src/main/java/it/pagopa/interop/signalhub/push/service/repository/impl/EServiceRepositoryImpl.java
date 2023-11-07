@@ -31,13 +31,13 @@ public class EServiceRepositoryImpl implements EServiceRepository {
     public Mono<EService> findByProducerIdAndEServiceId(String eserviceId, String producerId, String descriptorId) {
 
         return this.cacheRepository.findById(eserviceId, producerId, descriptorId)
-                .doOnNext(cache -> log.info("[{}-{}] EService in cache", eserviceId))
+                .doOnNext(cache -> log.info("[{} - {}] EService in cache", eserviceId, producerId))
                 .flatMap(eServiceCache -> {
                     if(eServiceCache.getState().equals(Const.STATE_ACTIVE)) return Mono.just(eServiceCache);
                     return Mono.error(new PDNDGenericException(ESERVICE_STATUS_IS_NOT_ACTIVE, ESERVICE_STATUS_IS_NOT_ACTIVE.getMessage().concat(eserviceId)));
                 })
                 .switchIfEmpty(Mono.defer(() -> {
-                    log.info("[{}-{}] ConsumerEService no in cache",  eserviceId);
+                    log.info("[{} - {}] ConsumerEService no in cache",  eserviceId, producerId);
                     return Mono.empty();
                 }))
                 .map(mapper::toEntity)
@@ -54,11 +54,11 @@ public class EServiceRepositoryImpl implements EServiceRepository {
         );
         return this.template.selectOne(equals, EService.class)
                 .switchIfEmpty(Mono.defer(()-> {
-                    log.info("[{}-{}] EService not founded into DB",  eserviceId);
+                    log.info("[{} - {}] EService not founded into DB",  eserviceId, producerId);
                     return Mono.empty();
                 }))
                 .doOnNext(entity ->
-                        log.info("[{}-{}] EService founded into DB",  eserviceId)
+                        log.info("[{} - {}] EService founded into DB",  eserviceId, producerId)
                 )
                 .flatMap(entity -> this.cacheRepository.save(mapper.toCache(entity)))
                 .map(mapper::toEntity);
