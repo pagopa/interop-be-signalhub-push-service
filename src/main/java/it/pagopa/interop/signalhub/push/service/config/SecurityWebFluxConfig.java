@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -20,16 +22,14 @@ public class SecurityWebFluxConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, JWTFilter jwtFilter) {
 
-        http.csrf().disable();
+        http.csrf(ServerHttpSecurity.CsrfSpec::disable);
 
-        http.authorizeExchange()
-                .pathMatchers("/actuator/**")
-                .permitAll()
-                .and()
-                .addFilterAt(jwtFilter, SecurityWebFiltersOrder.FIRST)
-                .authorizeExchange()
-                .anyExchange()
-                .authenticated();
+        http.authorizeExchange(auth -> {
+            auth.pathMatchers("/actuator/**").permitAll();
+            auth.anyExchange().authenticated();
+        });
+
+        http.addFilterAt(jwtFilter, SecurityWebFiltersOrder.FIRST);
 
         return http.build();
     }
