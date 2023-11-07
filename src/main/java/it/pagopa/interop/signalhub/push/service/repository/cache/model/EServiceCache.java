@@ -5,7 +5,7 @@ import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.sql.Timestamp;
-
+import java.util.Objects;
 
 
 @Data
@@ -21,4 +21,19 @@ public class EServiceCache {
     private String state;
     private Timestamp tmstInsert;
     private Timestamp tmstLastEdit;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EServiceCache that = (EServiceCache) o;
+        return Objects.equals(eserviceId, that.eserviceId) && Objects.equals(producerId, that.producerId) && Objects.equals(descriptorId, that.descriptorId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eserviceId, producerId, descriptorId);
+    }
+
 }
