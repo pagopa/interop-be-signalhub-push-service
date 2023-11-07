@@ -15,6 +15,7 @@ public class SecurityBeanBuilder {
     @Bean
     public JwkProvider jwkProvider(){
         return new JwkProviderBuilder(jwkProviderEndpoint)
+                .cached(true)
                 .build();
     }
 

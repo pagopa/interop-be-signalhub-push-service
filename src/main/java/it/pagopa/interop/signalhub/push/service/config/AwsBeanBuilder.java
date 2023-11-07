@@ -12,6 +12,7 @@ import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.WebIdentityTokenFileCredentialsProvider;
 import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.kms.KmsClient;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 
 import java.net.URI;
@@ -49,6 +50,12 @@ public class AwsBeanBuilder {
                 .sqsAsyncClient(sqsAsyncClient)
                 .build();
     }
+
+    @Bean
+    public KmsClient kmsClient() {
+        return configureBuilder(KmsClient.builder(), null);
+    }
+
 
     private <C> C configureBuilder(AwsClientBuilder<?, C> builder, String endpoint) {
         if( props != null ) {
