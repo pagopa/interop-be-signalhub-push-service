@@ -1,16 +1,14 @@
 package it.pagopa.interop.signalhub.push.service.filter;
 
-import com.auth0.jwk.Jwk;
-import com.auth0.jwk.JwkException;
-import com.auth0.jwk.JwkProvider;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import it.pagopa.interop.signalhub.push.service.auth.JWTAuthManager;
-import it.pagopa.interop.signalhub.push.service.auth.JWTConverter;
 import it.pagopa.interop.signalhub.push.service.auth.JWTUtil;
+import it.pagopa.interop.signalhub.push.service.auth.PrincipalAgreement;
 import it.pagopa.interop.signalhub.push.service.exception.JWTException;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.repository.JWTRepository;
 import it.pagopa.interop.signalhub.push.service.repository.cache.model.JWTCache;
+import it.pagopa.interop.signalhub.push.service.service.InteropService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.server.WebFilterExchange;
@@ -30,8 +30,9 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import java.security.PublicKey;
+import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.*;
 
@@ -40,13 +41,13 @@ import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEn
 @AllArgsConstructor
 @Configuration
 public class JWTFilter implements WebFilter {
-    private final Function<ServerWebExchange, Mono<DecodedJWT>> jwtDecoded = new JWTConverter();
+    private final Function<ServerWebExchange, Mono<DecodedJWT>> jwtConverter;
+    private final Predicate<PrincipalAgreement> principalAgreementValidator;
     private final ReactiveAuthenticationManager reactiveAuthManager = new JWTAuthManager();
     private final ServerSecurityContextRepository securityContextRepository = NoOpServerSecurityContextRepository.getInstance();
-
     private ServerAuthenticationSuccessHandler authSuccessHandler;
-    private JwkProvider jwkProvider;
     private JWTRepository jwtRepository;
+    private InteropService interopService;
 
 
 
@@ -58,27 +59,29 @@ public class JWTFilter implements WebFilter {
 
         return Mono.justOrEmpty(exchangeRequest)
                 .doOnNext(exchange -> log.info("Start JWT filter validation"))
-                .flatMap(jwtDecoded)
+                .flatMap(jwtConverter)
                 .doOnNext(jwt -> log.info("JWT decoded"))
                 .switchIfEmpty(chain.filter(exchangeRequest).then(Mono.empty()))
                 .doOnNext(jwt -> log.info("JWT is valid ?"))
                 .flatMap(jwtRepository::findByJWT)
-
-                .map(JWTUtil.verifyToken(this::getPublicKey))
-                .onErrorResume(JWTException.class, ex -> {
-                    return jwtRepository.saveOnCache(new JWTCache(ex.getJwt()))
-                            .flatMap(item -> Mono.error(new PDNDGenericException(ex.getExceptionType(), ex.getMessage(), ex.getHttpStatus())));
-                })
                 .doOnNext(jwt -> log.info("JWT is valid"))
-                .flatMap(token -> authenticate(exchangeRequest, chain, token));
+                .map(JWTUtil::getPurposeClaim)
+                .flatMap(interopService::getPrincipalFromPurposeId)
+                .filter(principalAgreementValidator)
+                .switchIfEmpty(Mono.error(new PDNDGenericException(AGREEMENT_NOT_VALID, AGREEMENT_NOT_VALID.getMessage(), HttpStatus.UNAUTHORIZED)))
+                .doOnNext(principal -> log.info("Principal is valid"))
+                .flatMap(principal -> authenticate(exchangeRequest, chain, principal))
+                .onErrorResume(JWTException.class, ex ->
+                        jwtRepository.saveOnCache(new JWTCache(ex.getJwt()))
+                                .flatMap(item -> Mono.error(new PDNDGenericException(ex.getExceptionType(), ex.getMessage(), ex.getHttpStatus())))
+                );
 
 
     }
 
-    private Mono<Void> authenticate(ServerWebExchange exchange,
-                                    WebFilterChain chain, DecodedJWT token) {
+    private Mono<Void> authenticate(ServerWebExchange exchange, WebFilterChain chain, PrincipalAgreement principalAgreement) {
         WebFilterExchange webFilterExchange = new WebFilterExchange(exchange, chain);
-        return this.reactiveAuthManager.authenticate(JWTUtil.getAuthenticationJwt(token))
+        return this.reactiveAuthManager.authenticate(getAuthentication(principalAgreement))
                 .flatMap(authentication -> onAuthSuccess(authentication, webFilterExchange));
     }
 
@@ -92,14 +95,8 @@ public class JWTFilter implements WebFilter {
     }
 
 
-    private PublicKey getPublicKey(DecodedJWT jwt) {
-        try {
-            Jwk jwk = jwkProvider.get(jwt.getKeyId());
-            return jwk.getPublicKey();
-        } catch (JwkException ex) {
-            throw new JWTException(JWT_NOT_VALID, JWT_NOT_VALID.getMessage(), HttpStatus.UNAUTHORIZED, jwt.getToken());
-        }
-
+    public static Authentication getAuthentication(PrincipalAgreement principalAgreement) {
+        return new UsernamePasswordAuthenticationToken(principalAgreement, null, List.of(new SimpleGrantedAuthority("ORGANIZATION")));
     }
 
 
