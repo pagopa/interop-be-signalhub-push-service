@@ -1,9 +1,6 @@
 package it.pagopa.interop.signalhub.push.service.filter;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
-import it.pagopa.interop.signalhub.push.service.auth.JWTAuthManager;
-import it.pagopa.interop.signalhub.push.service.auth.JWTUtil;
-import it.pagopa.interop.signalhub.push.service.auth.PrincipalAgreement;
+import it.pagopa.interop.signalhub.push.service.auth.*;
 import it.pagopa.interop.signalhub.push.service.exception.JWTException;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.repository.JWTRepository;
@@ -31,8 +28,6 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.*;
 
@@ -41,13 +36,13 @@ import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEn
 @AllArgsConstructor
 @Configuration
 public class JWTFilter implements WebFilter {
-    private final Function<ServerWebExchange, Mono<DecodedJWT>> jwtConverter;
-    private final Predicate<PrincipalAgreement> principalAgreementValidator;
-    private final ReactiveAuthenticationManager reactiveAuthManager = new JWTAuthManager();
+    private final JWTConverter jwtConverter;
+    private final PrincipalAgreementValidator principalAgreementValidator;
+    private final ReactiveAuthenticationManager reactiveAuthManager;
     private final ServerSecurityContextRepository securityContextRepository = NoOpServerSecurityContextRepository.getInstance();
-    private ServerAuthenticationSuccessHandler authSuccessHandler;
-    private JWTRepository jwtRepository;
-    private InteropService interopService;
+    private final ServerAuthenticationSuccessHandler authSuccessHandler;
+    private final JWTRepository jwtRepository;
+    private final InteropService interopService;
 
 
 

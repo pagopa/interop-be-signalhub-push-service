@@ -12,9 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class InternalSqsProducerTest extends BaseTest {
-
-
-
     @Autowired
     private InternalSqsProducer internalSqsProducer;
 
