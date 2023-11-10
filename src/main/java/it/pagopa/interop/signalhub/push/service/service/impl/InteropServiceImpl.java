@@ -27,14 +27,13 @@ public class InteropServiceImpl implements InteropService {
                 .doOnNext(cache -> log.info("[{}] purposeId in cache", purposeId))
                 .switchIfEmpty(Mono.defer(() -> {
                     log.info("[{}] purposeId no in cache",  purposeId);
-                    return interoperabilityClient.getAgreementByPurposeId(purposeId);
+                    return interoperabilityClient.getAgreementByPurposeId(purposeId)
+                            .flatMap(agreement -> cacheRepository.save(agreement, purposeId))
+                            .doOnNext(agreement -> log.info("[[{} - {}] Agreement saved on cache", purposeId, agreement.getId()));
                 }))
-                .flatMap(agreement -> cacheRepository.save(agreement, purposeId))
-                .doOnNext(agreement -> log.info("[[{} - {}] Agreement saved on cache", purposeId, agreement.getId()))
                 .map(principalAgreementMapper::toPrincipal)
                 .onErrorResume(ex ->
                         Mono.error(new PDNDGenericException(DETAIL_AGREEMENT_ERROR, DETAIL_AGREEMENT_ERROR.getMessage())));
     }
-
 
 }
