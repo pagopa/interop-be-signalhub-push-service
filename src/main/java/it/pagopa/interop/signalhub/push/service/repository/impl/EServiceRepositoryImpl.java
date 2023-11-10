@@ -48,7 +48,7 @@ public class EServiceRepositoryImpl implements EServiceRepository {
         Query equals = Query.query(
                 where(EService.COLUMN_ESERVICE_ID).is(eserviceId)
                         .and(where(EService.COLUMN_PRODUCER_ID).is(producerId))
-                        .and(where(EService.COLUMN_STATE).not(Const.STATE_ACTIVE))
+                        .and(where(EService.COLUMN_STATE).is(Const.STATE_ACTIVE))
         );
         return this.template.selectOne(equals, EService.class)
                 .switchIfEmpty(Mono.defer(()-> {
