@@ -28,7 +28,7 @@ public class SignalServiceImpl implements SignalService {
 
     @Override
     public Mono<Signal> pushSignal(String producerId, SignalRequest signalRequest) {
-        return eServiceRepository.findByProducerIdAndEServiceId(signalRequest.getEserviceId(), producerId,  "descrittore")
+        return eServiceRepository.findByProducerIdAndEServiceId(signalRequest.getEserviceId(), producerId)
                 .switchIfEmpty(Mono.error(new PDNDGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage().concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN)))
                 .flatMap(eservice -> signalRepository.findBySignalIdAndEServiceId(signalRequest.getIndexSignal(), signalRequest.getEserviceId()))
                 .flatMap(eservice -> {

@@ -28,7 +28,7 @@ public class EServiceCache {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EServiceCache that = (EServiceCache) o;
-        return Objects.equals(eserviceId, that.eserviceId) && Objects.equals(producerId, that.producerId) && Objects.equals(descriptorId, that.descriptorId);
+        return Objects.equals(eserviceId, that.eserviceId) && Objects.equals(producerId, that.producerId);
     }
 
     @Override

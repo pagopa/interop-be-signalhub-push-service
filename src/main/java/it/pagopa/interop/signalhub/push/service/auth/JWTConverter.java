@@ -47,7 +47,7 @@ public class JWTConverter implements Function<ServerWebExchange, Mono<DecodedJWT
                 .map(JWTUtil.decodeJwt())
                 .filter(fieldsCheck())
                 .map(validateToken())
-                .switchIfEmpty(Mono.error(new PDNDGenericException(JWT_NOT_PRESENT, JWT_NOT_PRESENT.getMessage(), HttpStatus.UNAUTHORIZED)));
+                .switchIfEmpty(Mono.error(new PDNDGenericException(JWT_UNAUTHORIZED, JWT_UNAUTHORIZED.getMessage(), HttpStatus.UNAUTHORIZED)));
     }
 
     private Predicate<DecodedJWT> fieldsCheck(){

@@ -27,9 +27,9 @@ public class EServiceRepositoryImpl implements EServiceRepository {
     private final EServiceMapper mapper;
 
     @Override
-    public Mono<EService> findByProducerIdAndEServiceId(String eserviceId, String producerId, String descriptorId) {
+    public Mono<EService> findByProducerIdAndEServiceId(String eserviceId, String producerId) {
 
-        return this.cacheRepository.findById(eserviceId, producerId, descriptorId)
+        return this.cacheRepository.findById(eserviceId, producerId)
                 .doOnNext(cache -> log.info("[{} - {}] EService in cache", eserviceId, producerId))
                 .flatMap(eServiceCache -> {
                     if(eServiceCache.getState().equals(Const.STATE_ACTIVE)) return Mono.just(eServiceCache);
@@ -40,15 +40,14 @@ public class EServiceRepositoryImpl implements EServiceRepository {
                     return Mono.empty();
                 }))
                 .map(mapper::toEntity)
-                .switchIfEmpty(getFromDbAndSaveOnCache(eserviceId, producerId, descriptorId));
+                .switchIfEmpty(getFromDbAndSaveOnCache(eserviceId, producerId));
 
     }
 
-    private Mono<EService> getFromDbAndSaveOnCache(String eserviceId, String producerId, String descriptorId) {
+    private Mono<EService> getFromDbAndSaveOnCache(String eserviceId, String producerId) {
         Query equals = Query.query(
                 where(EService.COLUMN_ESERVICE_ID).is(eserviceId)
                         .and(where(EService.COLUMN_PRODUCER_ID).is(producerId))
-                        .and(where(EService.COLUMN_DESCRIPTOR_ID).is(descriptorId))
                         .and(where(EService.COLUMN_STATE).not(Const.STATE_ACTIVE))
         );
         return this.template.selectOne(equals, EService.class)

@@ -15,9 +15,9 @@ import reactor.core.publisher.Mono;
 public class EServiceCacheRepository {
     private final ReactiveRedisOperations<String, EServiceCache> reactiveRedisOperations;
 
-    public Mono<EServiceCache> findById(String eservice, String producerId, String descriptor) {
+    public Mono<EServiceCache> findById(String eservice, String producerId) {
         return this.reactiveRedisOperations.opsForList()
-                .indexOf(eservice, getEserviceForSearching(eservice, producerId, descriptor))
+                .indexOf(eservice, getEserviceForSearching(eservice, producerId))
                 .flatMap(index -> this.reactiveRedisOperations.opsForList().index(eservice, index));
     }
 
@@ -34,10 +34,9 @@ public class EServiceCacheRepository {
     }
 
 
-    private EServiceCache getEserviceForSearching(String eserviceId, String producerId, String descriptorId) {
+    private EServiceCache getEserviceForSearching(String eserviceId, String producerId) {
         EServiceCache cache = new EServiceCache();
         cache.setEserviceId(eserviceId);
-        cache.setDescriptorId(descriptorId);
         cache.setProducerId(producerId);
         return cache;
     }

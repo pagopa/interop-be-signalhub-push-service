@@ -37,9 +37,9 @@ class EServiceRepositoryImplTest {
 
     @Test
     void findByConsumerIdAndEServiceIdButNotExists() {
-        Mockito.when(cacheRepository.findById(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        Mockito.when(cacheRepository.findById(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
         Mockito.when(template.selectOne(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
-        assertNull(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "123", "123").block());
+        assertNull(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "123").block());
     }
 
     @Test
@@ -51,25 +51,25 @@ class EServiceRepositoryImplTest {
         eServiceCache.setEserviceId("123");
         eServiceCache.setDescriptorId("123");
         eServiceCache.setState(Const.STATE_ACTIVE);
-        Mockito.when(cacheRepository.findById(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.just(eServiceCache));
+        Mockito.when(cacheRepository.findById(Mockito.any(), Mockito.any())).thenReturn(Mono.just(eServiceCache));
         Mockito.when(mapper.toEntity(Mockito.any())).thenReturn(eService);
         Mockito.when(template.selectOne(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
-        assertNotNull(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "123", "123").block());
+        assertNotNull(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "123").block());
     }
 
     @Test
     void findByConsumerIdAndEServiceIdButStateIsNotActive() {
-        EService eService= new EService();
+        EService eService = new EService();
         eService.setEserviceId("123");
         eService.setDescriptorId("123");
         EServiceCache eServiceCache= new EServiceCache();
         eServiceCache.setEserviceId("123");
         eServiceCache.setDescriptorId("123");
         eServiceCache.setState("test");
-        Mockito.when(cacheRepository.findById(Mockito.any(),Mockito.any(), Mockito.any())).thenReturn(Mono.just(eServiceCache));
+        Mockito.when(cacheRepository.findById(Mockito.any(),Mockito.any())).thenReturn(Mono.just(eServiceCache));
         Mockito.when(template.selectOne(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
 
-        StepVerifier.create(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "1234","1234"))
+        StepVerifier.create(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "1234"))
                 .expectErrorMatches((ex) -> {
                     assertTrue(ex instanceof PDNDGenericException);
                     assertEquals(ExceptionTypeEnum.ESERVICE_STATUS_IS_NOT_ACTIVE,((PDNDGenericException) ex).getExceptionType());
@@ -80,11 +80,11 @@ class EServiceRepositoryImplTest {
 
     @Test
     void findByConsumerIdAndEServiceIdButNotFoundInCache() {
-        Mockito.when(cacheRepository.findById(Mockito.any(),Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        Mockito.when(cacheRepository.findById(Mockito.any(),Mockito.any())).thenReturn(Mono.empty());
         Mockito.when(template.selectOne(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
         Mockito.when(cacheRepository.save(Mockito.any())).thenReturn(Mono.just(new EServiceCache()));
         Mockito.when(mapper.toEntity(Mockito.any())).thenReturn(new EService());
-        assertNotNull(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "123", "123").block());
+        assertNotNull(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "123").block());
     }
 
 

@@ -40,7 +40,7 @@ class EServiceCacheRepositoryTest {
     void findById() {
         Mockito.when(reactiveRedisOperations.opsForList().indexOf(Mockito.any(), Mockito.any())).thenReturn(Mono.just(1l));
         Mockito.when(reactiveRedisOperations.opsForList().index(Mockito.any(), Mockito.anyLong())).thenReturn(Mono.just(eserviceCache));
-        assertNotNull(eServiceCacheRepository.findById("123",  "123", "123").block());
+        assertNotNull(eServiceCacheRepository.findById("123",  "123").block());
     }
 
 
