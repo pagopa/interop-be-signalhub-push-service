@@ -50,7 +50,7 @@ class EServiceRepositoryImplTest {
         EServiceCache eServiceCache= new EServiceCache();
         eServiceCache.setEserviceId("123");
         eServiceCache.setDescriptorId("123");
-        eServiceCache.setState(Const.STATE_ACTIVE);
+        eServiceCache.setState(Const.STATE_PUBLISHED);
         Mockito.when(cacheRepository.findById(Mockito.any(), Mockito.any())).thenReturn(Mono.just(eServiceCache));
         Mockito.when(mapper.toEntity(Mockito.any())).thenReturn(eService);
         Mockito.when(template.selectOne(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());

@@ -13,7 +13,7 @@ import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
-import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.ESERVICE_STATUS_IS_NOT_ACTIVE;
+import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.ESERVICE_STATUS_IS_NOT_PUBLISHED;
 import static org.springframework.data.relational.core.query.Criteria.where;
 
 
@@ -32,8 +32,8 @@ public class EServiceRepositoryImpl implements EServiceRepository {
         return this.cacheRepository.findById(eserviceId, producerId)
                 .doOnNext(cache -> log.info("[{} - {}] EService in cache", eserviceId, producerId))
                 .flatMap(eServiceCache -> {
-                    if(eServiceCache.getState().equals(Const.STATE_ACTIVE)) return Mono.just(eServiceCache);
-                    return Mono.error(new PDNDGenericException(ESERVICE_STATUS_IS_NOT_ACTIVE, ESERVICE_STATUS_IS_NOT_ACTIVE.getMessage().concat(eserviceId)));
+                    if(eServiceCache.getState().equals(Const.STATE_PUBLISHED)) return Mono.just(eServiceCache);
+                    return Mono.error(new PDNDGenericException(ESERVICE_STATUS_IS_NOT_PUBLISHED, ESERVICE_STATUS_IS_NOT_PUBLISHED.getMessage().concat(eserviceId)));
                 })
                 .switchIfEmpty(Mono.defer(() -> {
                     log.info("[{} - {}] EService no in cache",  eserviceId, producerId);
@@ -48,7 +48,7 @@ public class EServiceRepositoryImpl implements EServiceRepository {
         Query equals = Query.query(
                 where(EService.COLUMN_ESERVICE_ID).is(eserviceId)
                         .and(where(EService.COLUMN_PRODUCER_ID).is(producerId))
-                        .and(where(EService.COLUMN_STATE).is(Const.STATE_ACTIVE))
+                        .and(where(EService.COLUMN_STATE).is(Const.STATE_PUBLISHED))
         );
         return this.template.selectOne(equals, EService.class)
                 .switchIfEmpty(Mono.defer(()-> {

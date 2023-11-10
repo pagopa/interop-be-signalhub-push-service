@@ -17,7 +17,7 @@ public enum ExceptionTypeEnum {
 
     SIGNALID_ALREADY_EXISTS("SIGNALID_ALREADY_EXISTS", "Esiste già un signalId per il determinato servizio"),
 
-    ESERVICE_STATUS_IS_NOT_ACTIVE("ESERVICE_STATUS_IS_NOT_ACTIVE", "Lo stato del servizio è diverso da ACTIVE. EServiceId: ");
+    ESERVICE_STATUS_IS_NOT_PUBLISHED("ESERVICE_STATUS_IS_NOT_PUBLISHED", "Lo stato del servizio è diverso da PUBLISHED. EServiceId: ");
 
     private final String title;
     private final String message;
