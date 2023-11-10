@@ -36,7 +36,7 @@ public class EServiceRepositoryImpl implements EServiceRepository {
                     return Mono.error(new PDNDGenericException(ESERVICE_STATUS_IS_NOT_ACTIVE, ESERVICE_STATUS_IS_NOT_ACTIVE.getMessage().concat(eserviceId)));
                 })
                 .switchIfEmpty(Mono.defer(() -> {
-                    log.info("[{} - {}] ConsumerEService no in cache",  eserviceId, producerId);
+                    log.info("[{} - {}] EService no in cache",  eserviceId, producerId);
                     return Mono.empty();
                 }))
                 .map(mapper::toEntity)
