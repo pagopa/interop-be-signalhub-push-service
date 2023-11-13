@@ -1,4 +1,4 @@
-package it.pagopa.interop.signalhub.push.service.repository.cache.model;
+package it.pagopa.interop.signalhub.push.service.cache.model;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

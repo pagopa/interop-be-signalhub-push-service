@@ -5,7 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import it.pagopa.interop.signalhub.push.service.auth.*;
 import it.pagopa.interop.signalhub.push.service.config.BeanBuilder;
-import it.pagopa.interop.signalhub.push.service.repository.JWTRepository;
+import it.pagopa.interop.signalhub.push.service.service.JWTService;
 import it.pagopa.interop.signalhub.push.service.service.InteropService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +37,7 @@ class JWTFilterTest {
     @Mock
     private ServerAuthenticationSuccessHandler authSuccessHandler;
     @Mock
-    private JWTRepository jwtRepository;
+    private JWTService jwtRepository;
     @Mock
     private InteropService interopService;
     @InjectMocks

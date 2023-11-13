@@ -1,33 +1,23 @@
-package it.pagopa.interop.signalhub.push.service.repository.impl;
+package it.pagopa.interop.signalhub.push.service.service.impl;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8UnwrappingOptionalBeanPropertyWriter;
-import it.pagopa.interop.signalhub.push.service.entities.EService;
-import it.pagopa.interop.signalhub.push.service.entities.Signal;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
-import it.pagopa.interop.signalhub.push.service.mapper.EServiceMapper;
-import it.pagopa.interop.signalhub.push.service.repository.EServiceRepository;
-import it.pagopa.interop.signalhub.push.service.repository.JWTRepository;
-import it.pagopa.interop.signalhub.push.service.repository.cache.model.JWTCache;
-import it.pagopa.interop.signalhub.push.service.repository.cache.repository.EServiceCacheRepository;
-import it.pagopa.interop.signalhub.push.service.repository.cache.repository.JWTCacheRepository;
-import it.pagopa.interop.signalhub.push.service.utils.Const;
+import it.pagopa.interop.signalhub.push.service.cache.model.JWTCache;
+import it.pagopa.interop.signalhub.push.service.cache.repository.JWTCacheRepository;
+import it.pagopa.interop.signalhub.push.service.service.JWTService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
-import org.springframework.data.relational.core.query.Query;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.JWT_NOT_VALID;
-import static org.springframework.data.relational.core.query.Criteria.where;
 
 
 @Slf4j
-@Repository
+@Service
 @AllArgsConstructor
-public class JWTRepositoryImpl implements JWTRepository {
+public class JWTServiceImpl implements JWTService {
 
     private final JWTCacheRepository cacheRepository;
 

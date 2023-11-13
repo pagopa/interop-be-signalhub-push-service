@@ -1,8 +1,8 @@
 package it.pagopa.interop.signalhub.push.service.config;
 
 import it.pagopa.interop.signalhub.push.service.generated.openapi.client.interop.model.v1.Agreement;
-import it.pagopa.interop.signalhub.push.service.repository.cache.model.EServiceCache;
-import it.pagopa.interop.signalhub.push.service.repository.cache.model.JWTCache;
+import it.pagopa.interop.signalhub.push.service.cache.model.EServiceCache;
+import it.pagopa.interop.signalhub.push.service.cache.model.JWTCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

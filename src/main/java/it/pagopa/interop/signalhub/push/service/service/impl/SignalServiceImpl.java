@@ -6,12 +6,11 @@ import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.mapper.SignalMapper;
 import it.pagopa.interop.signalhub.push.service.queue.producer.InternalSqsProducer;
-import it.pagopa.interop.signalhub.push.service.repository.EServiceRepository;
 import it.pagopa.interop.signalhub.push.service.repository.SignalRepository;
+import it.pagopa.interop.signalhub.push.service.service.OrganizationService;
 import it.pagopa.interop.signalhub.push.service.service.SignalService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -21,14 +20,14 @@ import reactor.core.publisher.Mono;
 @Service
 @AllArgsConstructor
 public class SignalServiceImpl implements SignalService {
-    private final EServiceRepository eServiceRepository;
+    private final OrganizationService organizationEService;
     private final SignalRepository signalRepository;
     private final SignalMapper signalMapper;
     private final InternalSqsProducer internalSqsProducer;
 
     @Override
     public Mono<Signal> pushSignal(String producerId, SignalRequest signalRequest) {
-        return eServiceRepository.findByProducerIdAndEServiceId(signalRequest.getEserviceId(), producerId)
+        return organizationEService.getEService(signalRequest.getEserviceId(), producerId)
                 .switchIfEmpty(Mono.error(new PDNDGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage().concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN)))
                 .flatMap(eservice -> signalRepository.findBySignalIdAndEServiceId(signalRequest.getIndexSignal(), signalRequest.getEserviceId()))
                 .flatMap(eservice -> {

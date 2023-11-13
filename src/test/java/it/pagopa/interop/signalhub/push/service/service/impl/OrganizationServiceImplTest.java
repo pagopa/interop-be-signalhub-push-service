@@ -1,11 +1,12 @@
-package it.pagopa.interop.signalhub.push.service.repository.impl;
+package it.pagopa.interop.signalhub.push.service.service.impl;
 
+import it.pagopa.interop.signalhub.push.service.cache.model.EServiceCache;
+import it.pagopa.interop.signalhub.push.service.cache.repository.EServiceCacheRepository;
 import it.pagopa.interop.signalhub.push.service.entities.EService;
 import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.mapper.EServiceMapper;
-import it.pagopa.interop.signalhub.push.service.repository.cache.model.EServiceCache;
-import it.pagopa.interop.signalhub.push.service.repository.cache.repository.EServiceCacheRepository;
+import it.pagopa.interop.signalhub.push.service.repository.EServiceRepository;
 import it.pagopa.interop.signalhub.push.service.utils.Const;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,19 +19,18 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-class EServiceRepositoryImplTest {
+class OrganizationServiceImplTest {
 
     @InjectMocks
-    private EServiceRepositoryImpl eServiceRepositoryimpl;
+    private OrganizationServiceImpl organizationService;
 
     @Mock
     private EServiceCacheRepository cacheRepository;
 
     @Mock
-    private R2dbcEntityTemplate template;
+    private EServiceRepository eServiceRepository;
 
     @Mock
     private EServiceMapper mapper;
@@ -38,8 +38,15 @@ class EServiceRepositoryImplTest {
     @Test
     void findByConsumerIdAndEServiceIdButNotExists() {
         Mockito.when(cacheRepository.findById(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
-        Mockito.when(template.selectOne(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
-        assertNull(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "123").block());
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+
+        StepVerifier.create(organizationService.getEService("123", "1234"))
+                .expectErrorMatches((ex) -> {
+                    assertTrue(ex instanceof PDNDGenericException);
+                    assertEquals(ExceptionTypeEnum.ESERVICE_NOT_FOUND,((PDNDGenericException) ex).getExceptionType());
+                    return true;
+
+                }).verify();
     }
 
     @Test
@@ -53,8 +60,8 @@ class EServiceRepositoryImplTest {
         eServiceCache.setState(Const.STATE_PUBLISHED);
         Mockito.when(cacheRepository.findById(Mockito.any(), Mockito.any())).thenReturn(Mono.just(eServiceCache));
         Mockito.when(mapper.toEntity(Mockito.any())).thenReturn(eService);
-        Mockito.when(template.selectOne(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
-        assertNotNull(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "123").block());
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        assertNotNull(organizationService.getEService("123", "123").block());
     }
 
     @Test
@@ -67,9 +74,9 @@ class EServiceRepositoryImplTest {
         eServiceCache.setDescriptorId("123");
         eServiceCache.setState("test");
         Mockito.when(cacheRepository.findById(Mockito.any(),Mockito.any())).thenReturn(Mono.just(eServiceCache));
-        Mockito.when(template.selectOne(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
 
-        StepVerifier.create(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "1234"))
+        StepVerifier.create(organizationService.getEService("123", "1234"))
                 .expectErrorMatches((ex) -> {
                     assertTrue(ex instanceof PDNDGenericException);
                     assertEquals(ExceptionTypeEnum.ESERVICE_STATUS_IS_NOT_PUBLISHED,((PDNDGenericException) ex).getExceptionType());
@@ -81,10 +88,10 @@ class EServiceRepositoryImplTest {
     @Test
     void findByConsumerIdAndEServiceIdButNotFoundInCache() {
         Mockito.when(cacheRepository.findById(Mockito.any(),Mockito.any())).thenReturn(Mono.empty());
-        Mockito.when(template.selectOne(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
         Mockito.when(cacheRepository.save(Mockito.any())).thenReturn(Mono.just(new EServiceCache()));
         Mockito.when(mapper.toEntity(Mockito.any())).thenReturn(new EService());
-        assertNotNull(eServiceRepositoryimpl.findByProducerIdAndEServiceId("123", "123").block());
+        assertNotNull(organizationService.getEService("123", "123").block());
     }
 
 

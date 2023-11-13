@@ -1,18 +1,13 @@
-package it.pagopa.interop.signalhub.push.service.repository.cache.repository;
+package it.pagopa.interop.signalhub.push.service.cache.repository;
 
 
 import it.pagopa.interop.signalhub.push.service.generated.openapi.client.interop.model.v1.Agreement;
-import it.pagopa.interop.signalhub.push.service.repository.cache.model.EServiceCache;
-import it.pagopa.interop.signalhub.push.service.repository.cache.model.JWTCache;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
-
-import java.util.UUID;
-import java.util.function.Predicate;
 
 
 @Slf4j

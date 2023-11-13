@@ -3,8 +3,8 @@ package it.pagopa.interop.signalhub.push.service.filter;
 import it.pagopa.interop.signalhub.push.service.auth.*;
 import it.pagopa.interop.signalhub.push.service.exception.JWTException;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
-import it.pagopa.interop.signalhub.push.service.repository.JWTRepository;
-import it.pagopa.interop.signalhub.push.service.repository.cache.model.JWTCache;
+import it.pagopa.interop.signalhub.push.service.service.JWTService;
+import it.pagopa.interop.signalhub.push.service.cache.model.JWTCache;
 import it.pagopa.interop.signalhub.push.service.service.InteropService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -41,7 +41,7 @@ public class JWTFilter implements WebFilter {
     private final ReactiveAuthenticationManager reactiveAuthManager;
     private final ServerSecurityContextRepository securityContextRepository = NoOpServerSecurityContextRepository.getInstance();
     private final ServerAuthenticationSuccessHandler authSuccessHandler;
-    private final JWTRepository jwtRepository;
+    private final JWTService jwtRepository;
     private final InteropService interopService;
 
 

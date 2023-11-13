@@ -1,12 +1,11 @@
-package it.pagopa.interop.signalhub.push.service.repository.impl;
+package it.pagopa.interop.signalhub.push.service.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import it.pagopa.interop.signalhub.push.service.cache.model.JWTCache;
+import it.pagopa.interop.signalhub.push.service.cache.repository.JWTCacheRepository;
 import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
-import it.pagopa.interop.signalhub.push.service.mapper.EServiceMapper;
-import it.pagopa.interop.signalhub.push.service.repository.cache.model.JWTCache;
-import it.pagopa.interop.signalhub.push.service.repository.cache.repository.JWTCacheRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(MockitoExtension.class)
-class JWTRepositoryImplTest {
+class JWTServiceImplTest {
 
     @InjectMocks
-    private JWTRepositoryImpl jwtRepository;
+    private JWTServiceImpl jwtService;
 
     @Mock
     private JWTCacheRepository cacheRepository;
@@ -32,7 +31,7 @@ class JWTRepositoryImplTest {
     void findByJWTButNotFoundInCache() {
         DecodedJWT jwt = JWT.decode("eyJhbGciOiJIUzI1NiJ9.eyJvYmplY3QiOnsibmFtZSI6ImpvaG4ifX0.lrU1gZlOdlmTTeZwq0VI-pZx2iV46UWYd5-lCjy6-c4");
         Mockito.when(cacheRepository.findById(Mockito.any())).thenReturn(Mono.empty());
-        assertNotNull(jwtRepository.findByJWT(jwt).block());
+        assertNotNull(jwtService.findByJWT(jwt).block());
     }
 
     @Test
@@ -40,7 +39,7 @@ class JWTRepositoryImplTest {
         DecodedJWT jwt = JWT.decode("eyJhbGciOiJIUzI1NiJ9.eyJvYmplY3QiOnsibmFtZSI6ImpvaG4ifX0.lrU1gZlOdlmTTeZwq0VI-pZx2iV46UWYd5-lCjy6-c4");
         Mockito.when(cacheRepository.findById(Mockito.any())).thenReturn(Mono.just(new JWTCache("123")));
 
-        StepVerifier.create(jwtRepository.findByJWT(jwt))
+        StepVerifier.create(jwtService.findByJWT(jwt))
                 .expectErrorMatches((ex) -> {
                     assertTrue(ex instanceof PDNDGenericException);
                     assertEquals(ExceptionTypeEnum.JWT_NOT_VALID, ((PDNDGenericException) ex).getExceptionType());
@@ -51,7 +50,7 @@ class JWTRepositoryImplTest {
     @Test
     void saveOnCache() {
         Mockito.when(cacheRepository.save(Mockito.any())).thenReturn(Mono.just(new JWTCache()));
-        assertNotNull(jwtRepository.saveOnCache(new JWTCache()).block());
+        assertNotNull(jwtService.saveOnCache(new JWTCache()).block());
     }
 
 
