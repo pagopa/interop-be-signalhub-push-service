@@ -2,6 +2,7 @@ package it.pagopa.interop.signalhub.push.service.repository;
 
 import it.pagopa.interop.signalhub.push.service.config.BaseTest;
 import it.pagopa.interop.signalhub.push.service.entities.EService;
+import it.pagopa.interop.signalhub.push.service.entities.Signal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,28 +13,26 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 
-class EServiceRepositoryTest extends BaseTest.WithR2DBC {
+class SignalRepositoryTest extends BaseTest.WithR2DBC {
 
     private static final String correctEservice = "1234";
-    private static final String correctProducer = "1234";
-    private static final String correctState = "PUBLISHED";
-    private static final String incorrectState = "ACTIVE";
+    private static final long correctSignal = 1l;
+    private static final long incorrectSignal = 0l;
 
     @Autowired
-    private EServiceRepository eServiceRepository;
+    private SignalRepository signalRepository;
 
     @BeforeEach
     void setUp(){
-        eServiceRepository.save(getEntity());
+        signalRepository.save(getEntity());
     }
 
     @Test
     void whenFindOrganizationWithBadlyParamThenReturnNull(){
-        Mono<EService> entity =
-                eServiceRepository.findByProducerIdAndEServiceIdAndState(
-                        correctEservice,
-                        correctProducer,
-                        incorrectState);
+        Mono<Signal> entity =
+                signalRepository.findBySignalIdAndEServiceId(
+                        incorrectSignal,
+                        correctEservice);
 
         Assertions.assertNull(entity);
     }
@@ -41,22 +40,20 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
 
     @Test
     void whenFindOrganizationWithCorrectParamThenReturnEntity(){
-        Mono<EService> entity =
-                eServiceRepository.findByProducerIdAndEServiceIdAndState(
-                        correctEservice,
-                        correctProducer,
-                        correctState);
+        Mono<Signal> entity =
+                signalRepository.findBySignalIdAndEServiceId(
+                        correctSignal,
+                        correctEservice);
 
         Assertions.assertNotNull(entity);
         Assertions.assertEquals(entity.block(), getEntity());
     }
 
 
-    private EService getEntity(){
-        EService entity = new EService();
+    private Signal getEntity(){
+        Signal entity = new Signal();
         entity.setEserviceId(correctEservice);
-        entity.setProducerId(correctProducer);
-        entity.setState("published");
+        entity.setSignalId(correctSignal);
         entity.setTmstInsert(Timestamp.from(Instant.now()));
         return entity;
     }

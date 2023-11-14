@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 public interface SignalRepository extends ReactiveCrudRepository<Signal, Long> {
 
     @Query("SELECT * FROM SIGNAL s WHERE s.eservice_id = :eserviceId AND s.signal_id = :signalId")
-    Mono<EService> findBySignalIdAndEServiceId(Long signalId, String eserviceId);
+    Mono<Signal> findBySignalIdAndEServiceId(Long signalId, String eserviceId);
 
 }
 

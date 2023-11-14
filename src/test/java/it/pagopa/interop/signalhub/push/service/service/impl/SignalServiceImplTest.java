@@ -64,7 +64,7 @@ class SignalServiceImplTest {
     void whenCallPushSignalAndSignalIdAlreadyExists() {
         SignalRequest signalRequest = getSignalRequest();
         Mockito.when(organizationService.getEService(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
-        Mockito.when(signalRepository.findBySignalIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
+        Mockito.when(signalRepository.findBySignalIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new it.pagopa.interop.signalhub.push.service.entities.Signal()));
 
         StepVerifier.create(signalService.pushSignal("1234", signalRequest))
                 .expectErrorMatches((ex) -> {
