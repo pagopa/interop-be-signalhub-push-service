@@ -4,14 +4,17 @@ import it.pagopa.interop.signalhub.push.service.generated.openapi.client.interop
 import it.pagopa.interop.signalhub.push.service.cache.model.EServiceCache;
 import it.pagopa.interop.signalhub.push.service.cache.model.JWTCache;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+@EnableRedisRepositories
 @Configuration
 @Slf4j
 public class RedisCacheConfig {

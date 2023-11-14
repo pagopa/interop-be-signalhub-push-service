@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 
 class EServiceRepositoryTest extends BaseTest.WithR2DBC {
@@ -29,26 +30,26 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
 
     @Test
     void whenFindOrganizationWithBadlyParamThenReturnNull(){
-        Mono<EService> entity =
+        List<EService> entity =
                 eServiceRepository.findByProducerIdAndEServiceIdAndState(
                         correctEservice,
                         correctProducer,
-                        incorrectState);
+                        incorrectState).collectList().block();
 
-        Assertions.assertNull(entity);
+        Assertions.assertTrue(entity.isEmpty());
     }
 
 
     @Test
     void whenFindOrganizationWithCorrectParamThenReturnEntity(){
-        Mono<EService> entity =
+        List<EService> entity =
                 eServiceRepository.findByProducerIdAndEServiceIdAndState(
                         correctEservice,
                         correctProducer,
-                        correctState);
+                        correctState).collectList().block();
 
-        Assertions.assertNotNull(entity);
-        Assertions.assertEquals(entity.block(), getEntity());
+        Assertions.assertFalse(entity.isEmpty());
+        Assertions.assertEquals(entity.get(0), getEntity());
     }
 
 
@@ -56,7 +57,7 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
         EService entity = new EService();
         entity.setEserviceId(correctEservice);
         entity.setProducerId(correctProducer);
-        entity.setState("published");
+        entity.setState(correctState);
         entity.setTmstInsert(Timestamp.from(Instant.now()));
         return entity;
     }

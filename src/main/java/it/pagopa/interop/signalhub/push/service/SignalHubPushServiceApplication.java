@@ -9,7 +9,6 @@ import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 @Slf4j
 @SpringBootApplication
 @EnableR2dbcAuditing
-@EnableCaching
 public class SignalHubPushServiceApplication {
 
 	public static void main(String[] args) {

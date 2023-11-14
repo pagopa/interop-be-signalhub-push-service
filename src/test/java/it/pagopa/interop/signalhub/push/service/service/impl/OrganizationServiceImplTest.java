@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -38,7 +39,7 @@ class OrganizationServiceImplTest {
     @Test
     void findByConsumerIdAndEServiceIdButNotExists() {
         Mockito.when(cacheRepository.findById(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
-        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Flux.empty());
 
         StepVerifier.create(organizationService.getEService("123", "1234"))
                 .expectErrorMatches((ex) -> {
@@ -60,7 +61,7 @@ class OrganizationServiceImplTest {
         eServiceCache.setState(Const.STATE_PUBLISHED);
         Mockito.when(cacheRepository.findById(Mockito.any(), Mockito.any())).thenReturn(Mono.just(eServiceCache));
         Mockito.when(mapper.toEntity(Mockito.any())).thenReturn(eService);
-        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Flux.empty());
         assertNotNull(organizationService.getEService("123", "123").block());
     }
 
@@ -74,7 +75,7 @@ class OrganizationServiceImplTest {
         eServiceCache.setDescriptorId("123");
         eServiceCache.setState("test");
         Mockito.when(cacheRepository.findById(Mockito.any(),Mockito.any())).thenReturn(Mono.just(eServiceCache));
-        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Flux.empty());
 
         StepVerifier.create(organizationService.getEService("123", "1234"))
                 .expectErrorMatches((ex) -> {
@@ -88,7 +89,7 @@ class OrganizationServiceImplTest {
     @Test
     void findByConsumerIdAndEServiceIdButNotFoundInCache() {
         Mockito.when(cacheRepository.findById(Mockito.any(),Mockito.any())).thenReturn(Mono.empty());
-        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.just(new EService()));
+        Mockito.when(eServiceRepository.findByProducerIdAndEServiceIdAndState(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Flux.just(new EService()));
         Mockito.when(cacheRepository.save(Mockito.any())).thenReturn(Mono.just(new EServiceCache()));
         Mockito.when(mapper.toEntity(Mockito.any())).thenReturn(new EService());
         assertNotNull(organizationService.getEService("123", "123").block());
