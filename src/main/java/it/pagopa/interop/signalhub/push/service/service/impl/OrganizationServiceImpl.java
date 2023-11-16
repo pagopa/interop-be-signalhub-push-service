@@ -9,6 +9,7 @@ import it.pagopa.interop.signalhub.push.service.service.OrganizationService;
 import it.pagopa.interop.signalhub.push.service.utils.Const;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -32,7 +33,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .doOnNext(cache -> log.info("[{} - {}] EService in cache", eserviceId, producerId))
                 .flatMap(eServiceCache -> {
                     if(eServiceCache.getState().equalsIgnoreCase(Const.STATE_PUBLISHED)) return Mono.just(eServiceCache);
-                    return Mono.error(new PDNDGenericException(ESERVICE_STATUS_IS_NOT_PUBLISHED, ESERVICE_STATUS_IS_NOT_PUBLISHED.getMessage().concat(eserviceId)));
+                    return Mono.error(new PDNDGenericException(ESERVICE_STATUS_IS_NOT_PUBLISHED, ESERVICE_STATUS_IS_NOT_PUBLISHED.getMessage().concat(eserviceId), HttpStatus.FORBIDDEN));
                 })
                 .switchIfEmpty(Mono.defer(() -> {
                     log.info("[{} - {}] EService no in cache",  eserviceId, producerId);
@@ -48,7 +49,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return this.eServiceRepository.findByProducerIdAndEServiceIdAndState(eserviceId, producerId, Const.STATE_PUBLISHED)
                 .switchIfEmpty(Mono.defer(()-> {
                     log.info("[{} - {}] EService not founded into DB",  eserviceId, producerId);
-                    return Mono.error(new PDNDGenericException(ESERVICE_NOT_FOUND, ESERVICE_NOT_FOUND.getMessage().concat(eserviceId)));
+                    return Mono.error(new PDNDGenericException(ESERVICE_NOT_FOUND, ESERVICE_NOT_FOUND.getMessage().concat(eserviceId), HttpStatus.FORBIDDEN));
                 }))
                 .doOnNext(entity ->
                         log.info("[{} - {}] EService founded into DB",  eserviceId, producerId)

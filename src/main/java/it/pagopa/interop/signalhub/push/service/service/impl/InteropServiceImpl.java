@@ -8,6 +8,7 @@ import it.pagopa.interop.signalhub.push.service.cache.repository.Interoperabilit
 import it.pagopa.interop.signalhub.push.service.service.InteropService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +34,7 @@ public class InteropServiceImpl implements InteropService {
                 }))
                 .map(principalAgreementMapper::toPrincipal)
                 .onErrorResume(ex ->
-                        Mono.error(new PDNDGenericException(DETAIL_AGREEMENT_ERROR, DETAIL_AGREEMENT_ERROR.getMessage())));
+                        Mono.error(new PDNDGenericException(DETAIL_AGREEMENT_ERROR, DETAIL_AGREEMENT_ERROR.getMessage(), HttpStatus.FORBIDDEN)));
     }
 
 
