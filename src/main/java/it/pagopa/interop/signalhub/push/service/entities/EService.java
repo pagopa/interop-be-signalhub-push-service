@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -40,10 +41,10 @@ public class EService{
     private String state;
 
     @Column(COLUMN_DATE_INSERT)
-    private Instant tmstInsert;
+    private Timestamp tmstInsert;
 
     @Column(COLUMN_DATE_UPDATE)
-    private Instant tmstLastEdit;
+    private Timestamp tmstLastEdit;
 
     @Override
     public boolean equals(Object o) {

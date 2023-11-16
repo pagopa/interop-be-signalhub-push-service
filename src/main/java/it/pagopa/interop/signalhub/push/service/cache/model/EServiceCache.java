@@ -4,6 +4,7 @@ package it.pagopa.interop.signalhub.push.service.cache.model;
 import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Objects;
@@ -20,8 +21,8 @@ public class EServiceCache {
     private String producerId;
     private String descriptorId;
     private String state;
-    private Instant tmstInsert;
-    private Instant tmstLastEdit;
+    private Timestamp tmstInsert;
+    private Timestamp tmstLastEdit;
 
 
     @Override

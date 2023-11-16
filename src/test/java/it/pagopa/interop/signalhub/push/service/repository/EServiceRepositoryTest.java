@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
@@ -64,8 +65,8 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
         entitySaved.setProducerId(correctProducer);
         entitySaved.setDescriptorId("1234");
         entitySaved.setState(correctState);
-        entitySaved.setTmstInsert(Instant.now());
-        entitySaved.setTmstLastEdit(Instant.now());
+        entitySaved.setTmstInsert(Timestamp.from(Instant.now()));
+        entitySaved.setTmstLastEdit(Timestamp.from(Instant.now()));
         return entitySaved;
     }
 

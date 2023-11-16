@@ -36,17 +36,17 @@ class EServiceTest {
     }
 
     @Test
-    void testTmstLastEdit() {
-        Instant time = Instant.now();
-        eService.setTmstLastEdit(time);
-        assertEquals(time, eService.getTmstLastEdit());
+    public void testTmstLastEdit() {
+        Timestamp tmstLastEdit = Timestamp.from(Instant.now());
+        eService.setTmstLastEdit(tmstLastEdit);
+        assertEquals(tmstLastEdit, eService.getTmstLastEdit());
     }
 
     @Test
-    void testTmstInsert() {
-        Instant time = Instant.now();
-        eService.setTmstInsert(time);
-        assertEquals(time, eService.getTmstInsert());
+    public void testTmstInsert() {
+        Timestamp tmstInsert = Timestamp.from(Instant.now());
+        eService.setTmstInsert(tmstInsert);
+        assertEquals(tmstInsert, eService.getTmstInsert());
     }
 
 }

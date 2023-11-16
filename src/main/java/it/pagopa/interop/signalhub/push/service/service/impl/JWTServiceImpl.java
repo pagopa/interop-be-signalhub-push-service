@@ -25,10 +25,10 @@ public class JWTServiceImpl implements JWTService {
     public Mono<DecodedJWT> findByJWT(DecodedJWT jwt) {
 
         return this.cacheRepository.findById(jwt.getToken())
-                .doOnNext(cache -> log.debug("JWT in cache"))
-                .flatMap(jwtCache -> Mono.error(new PDNDGenericException(JWT_NOT_VALID, JWT_NOT_VALID.getMessage(), HttpStatus.UNAUTHORIZED)))
+                .doOnNext(cache -> log.info("JWT in cache"))
+                .flatMap(jwtCache -> Mono.error(new PDNDGenericException(JWT_NOT_VALID, JWT_NOT_VALID.getMessage(), HttpStatus.FORBIDDEN)))
                 .switchIfEmpty(Mono.defer(() -> {
-                    log.debug("JWT no in cache");
+                    log.info("JWT no in cache");
                     return Mono.just(jwt);
                 })).thenReturn(jwt);
 
