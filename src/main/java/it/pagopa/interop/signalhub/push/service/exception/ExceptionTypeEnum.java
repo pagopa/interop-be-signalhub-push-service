@@ -11,6 +11,7 @@ public enum ExceptionTypeEnum {
     JWT_TYPE_INCORRECT("JWT_TYPE_INCORRECT", "Il vaucher passato non è del tipo atteso"),
     JWT_EMPTY("JWT_EMPTY", "Il vaucher passato è vuoto"),
     JWT_NOT_PRESENT("JWT_NOT_PRESENT", "Il vaucher non è stato passato"),
+    JWT_PARSER_ERROR("JWT_PARSER_ERROR", "Non è stato possibile decodificare il vaucher."),
     DETAIL_AGREEMENT_ERROR("DETAIL_AGREEMENT_ERROR", "Si è verificato un errore durante il recupero del dettaglio del purpose"),
     AGREEMENT_NOT_VALID("AGREEMENT_NOT_VALID", "Non si dispone delle autorizzazioni necessarie per utilizzare il sistema"),
     GENERIC_ERROR("GENERIC_ERROR", "Si è verificato un errore interno"),
