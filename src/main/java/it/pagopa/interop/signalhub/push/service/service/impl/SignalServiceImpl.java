@@ -2,13 +2,16 @@ package it.pagopa.interop.signalhub.push.service.service.impl;
 
 import it.pagopa.interop.signalhub.push.service.dto.Signal;
 import it.pagopa.interop.signalhub.push.service.dto.SignalRequest;
+import it.pagopa.interop.signalhub.push.service.dto.SignalType;
 import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.mapper.SignalMapper;
+import it.pagopa.interop.signalhub.push.service.queue.model.SignalEvent;
 import it.pagopa.interop.signalhub.push.service.queue.producer.InternalSqsProducer;
 import it.pagopa.interop.signalhub.push.service.repository.SignalRepository;
 import it.pagopa.interop.signalhub.push.service.service.OrganizationService;
 import it.pagopa.interop.signalhub.push.service.service.SignalService;
+import it.pagopa.interop.signalhub.push.service.utils.Const;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,7 +38,11 @@ public class SignalServiceImpl implements SignalService {
                     return Mono.error(new PDNDGenericException(ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS, ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS.getMessage().concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN));
                 }).switchIfEmpty(Mono.defer(() ->{
                     log.debug("SignalRequest = {}, push signal", signalRequest);
-                    return internalSqsProducer.push(signalMapper.toEvent(signalRequest));
+                    SignalEvent event = signalMapper.toEvent(signalRequest);
+                    if (signalRequest.getSignalType() == SignalType.SEEDUPDATE) {
+                        event.setObjectType(Const.SEED_UPDATE);
+                    }
+                    return internalSqsProducer.push(event);
                 })).thenReturn(signalMapper.toSignal(signalRequest));
     }
 

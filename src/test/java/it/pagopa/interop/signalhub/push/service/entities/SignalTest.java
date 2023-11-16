@@ -58,10 +58,10 @@ public class SignalTest {
     }
 
     @Test
-    public void testTmstInsert() {
-        Timestamp tmstInsert = Timestamp.from(Instant.now());
-        signalEntity.setTmstInsert(tmstInsert);
-        assertEquals(tmstInsert, signalEntity.getTmstInsert());
+    void testTmstInsert() {
+        Instant time = Instant.now();
+        signalEntity.setTmstInsert(time);
+        assertEquals(time, signalEntity.getTmstInsert());
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -39,6 +40,6 @@ public class Signal {
     private String signalType;
 
     @Column("tmst_insert")
-    private Timestamp tmstInsert;
+    private Instant tmstInsert;
 
 }
