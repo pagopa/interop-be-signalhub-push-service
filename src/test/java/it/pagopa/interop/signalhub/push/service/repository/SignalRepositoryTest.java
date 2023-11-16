@@ -1,7 +1,6 @@
 package it.pagopa.interop.signalhub.push.service.repository;
 
 import it.pagopa.interop.signalhub.push.service.config.BaseTest;
-import it.pagopa.interop.signalhub.push.service.entities.EService;
 import it.pagopa.interop.signalhub.push.service.entities.Signal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

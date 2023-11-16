@@ -2,13 +2,12 @@ package it.pagopa.interop.signalhub.push.service.repository;
 
 import it.pagopa.interop.signalhub.push.service.config.BaseTest;
 import it.pagopa.interop.signalhub.push.service.entities.EService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
@@ -19,6 +18,7 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
     private static final String correctProducer = "1234";
     private static final String correctState = "PUBLISHED";
     private static final String incorrectState = "ACTIVE";
+    private EService entitySaved;
 
     @Autowired
     private EServiceRepository eServiceRepository;
@@ -26,6 +26,11 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
     @BeforeEach
     void setUp(){
         eServiceRepository.save(getEntity()).block();
+    }
+
+    @AfterEach
+    void after(){
+        eServiceRepository.deleteAll().block();
     }
 
     @Test
@@ -49,18 +54,19 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
                         correctState).collectList().block();
 
         Assertions.assertFalse(entity.isEmpty());
-        Assertions.assertEquals(entity.get(0), getEntity());
+        Assertions.assertEquals(entitySaved, entity.get(0));
     }
 
 
     private EService getEntity(){
-        EService entity = new EService();
-        entity.setEserviceId(correctEservice);
-        entity.setProducerId(correctProducer);
-        entity.setState(correctState);
-        entity.setTmstInsert(Timestamp.valueOf("2022-06-14 04:01:56.279"));
-        entity.setTmstLastEdit(Timestamp.valueOf("2022-06-14 04:01:56.279"));
-        return entity;
+        entitySaved = new EService();
+        entitySaved.setEserviceId(correctEservice);
+        entitySaved.setProducerId(correctProducer);
+        entitySaved.setDescriptorId("1234");
+        entitySaved.setState(correctState);
+        entitySaved.setTmstInsert(Instant.now());
+        entitySaved.setTmstLastEdit(Instant.now());
+        return entitySaved;
     }
 
 }

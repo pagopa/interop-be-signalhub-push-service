@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Objects;
 
 
@@ -19,8 +20,8 @@ public class EServiceCache {
     private String producerId;
     private String descriptorId;
     private String state;
-    private Timestamp tmstInsert;
-    private Timestamp tmstLastEdit;
+    private Instant tmstInsert;
+    private Instant tmstLastEdit;
 
 
     @Override

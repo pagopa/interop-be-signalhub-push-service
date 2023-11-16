@@ -1,6 +1,5 @@
 package it.pagopa.interop.signalhub.push.service.repository;
 
-import it.pagopa.interop.signalhub.push.service.entities.EService;
 import it.pagopa.interop.signalhub.push.service.entities.Signal;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
