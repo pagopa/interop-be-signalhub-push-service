@@ -25,7 +25,7 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
 
     @BeforeEach
     void setUp(){
-        eServiceRepository.save(getEntity());
+        eServiceRepository.save(getEntity()).block();
     }
 
     @Test
@@ -58,7 +58,8 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
         entity.setEserviceId(correctEservice);
         entity.setProducerId(correctProducer);
         entity.setState(correctState);
-        entity.setTmstInsert(Timestamp.from(Instant.now()));
+        entity.setTmstInsert(Timestamp.valueOf("2022-06-14 04:01:56.279"));
+        entity.setTmstLastEdit(Timestamp.valueOf("2022-06-14 04:01:56.279"));
         return entity;
     }
 
