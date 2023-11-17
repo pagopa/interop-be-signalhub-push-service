@@ -35,7 +35,9 @@ public class SignalServiceImpl implements SignalService {
                 .flatMap(eservice -> signalRepository.findBySignalIdAndEServiceId(signalRequest.getIndexSignal(), signalRequest.getEserviceId()))
                 .flatMap(eservice -> {
                     log.debug("eservice = {}, SIGNALID_ALREADY_EXISTS", eservice);
-                    return Mono.error(new PDNDGenericException(ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS, ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS.getMessage().concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN));
+                    return Mono.error(new PDNDGenericException(ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS, ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS.getMessage()
+                            .concat(" ")
+                            .concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN));
                 }).switchIfEmpty(Mono.defer(() ->{
                     log.debug("SignalRequest = {}, push signal", signalRequest);
                     SignalEvent event = signalMapper.toEvent(signalRequest);
