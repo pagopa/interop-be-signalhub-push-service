@@ -19,9 +19,9 @@ class SignalMapperTest {
     @Test
     void toEvent() {
         SignalRequest signalRequest= new SignalRequest();
-        signalRequest.setIndexSignal(1L);
+        signalRequest.setSignalId(1L);
         SignalEvent signal= service.toEvent(signalRequest);
-        assertEquals(signalRequest.getIndexSignal(), signal.getIndexSignal() );
+        assertEquals(signalRequest.getSignalId(), signal.getSignalId() );
     }
 
     @Test
@@ -34,9 +34,9 @@ class SignalMapperTest {
     @Test
     void toSignal() {
         SignalRequest signalRequest= new SignalRequest();
-        signalRequest.setIndexSignal(1L);
+        signalRequest.setSignalId(1L);
         Signal signal= service.toSignal(signalRequest);
-        assertEquals(signal.getSignalId(), signalRequest.getIndexSignal());
+        assertEquals(signal.getSignalId(), signalRequest.getSignalId());
     }
 
     @Test

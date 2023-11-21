@@ -12,6 +12,7 @@ import it.pagopa.interop.signalhub.push.service.config.SignalHubPushConfig;
 import it.pagopa.interop.signalhub.push.service.exception.JWTException;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
@@ -25,6 +26,7 @@ import java.util.function.Predicate;
 
 import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.*;
 
+@Slf4j
 @AllArgsConstructor
 public class JWTConverter implements Function<ServerWebExchange, Mono<DecodedJWT>> {
     private static final String TYPE = "at+jwt";

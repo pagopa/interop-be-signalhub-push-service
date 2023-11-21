@@ -91,7 +91,7 @@ class SignalServiceImplTest {
         SignalRequest request = new SignalRequest();
         request.setSignalType(SignalType.CREATE);
         request.setEserviceId("123");
-        request.setIndexSignal(1L);
+        request.setSignalId(1L);
         request.setObjectId("test");
         request.setObjectType("test");
         return request;

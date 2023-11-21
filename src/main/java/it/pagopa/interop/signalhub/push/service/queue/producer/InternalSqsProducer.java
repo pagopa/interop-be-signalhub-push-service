@@ -27,9 +27,9 @@ public class InternalSqsProducer implements SqsProducer<SignalEvent> {
         String correlationId = UUID.randomUUID().toString();
         Message<String> message = MessageBuilder.withPayload(convertToJson(event))
                 .setHeader("correlationId", correlationId).build();
-        log.info("[{} - {}] Pushing signal on internal queue", event.getIndexSignal(), correlationId);
+        log.info("[{} - {}] Pushing signal on internal queue", event.getSignalId(), correlationId);
         return Mono.fromFuture(this.sqsTemplate.sendAsync(message))
-                .doOnNext(response -> log.info("[{} - {}] Signal pushed on internal queue", event.getIndexSignal(), correlationId))
+                .doOnNext(response -> log.info("[{} - {}] Signal pushed on internal queue", event.getSignalId(), correlationId))
                 .thenReturn(event);
     }
 

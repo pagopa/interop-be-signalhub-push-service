@@ -141,7 +141,7 @@ components:
         eserviceId:
           type: string
           description: eservice Id
-        indexSignal:
+        signalId:
           type: integer
           format: int64
           example: 1
@@ -151,7 +151,7 @@ components:
         - signalType
         - eserviceId
         - objectType
-        - indexSignal
+        - signalId
     SignalType:
       type: string
       description: type of signal

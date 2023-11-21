@@ -32,12 +32,12 @@ public class SignalServiceImpl implements SignalService {
     public Mono<Signal> pushSignal(String producerId, SignalRequest signalRequest) {
         return organizationEService.getEService(signalRequest.getEserviceId(), producerId)
                 .switchIfEmpty(Mono.error(new PDNDGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage().concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN)))
-                .flatMap(eservice -> signalRepository.findBySignalIdAndEServiceId(signalRequest.getIndexSignal(), signalRequest.getEserviceId()))
+                .flatMap(eservice -> signalRepository.findBySignalIdAndEServiceId(signalRequest.getSignalId(), signalRequest.getEserviceId()))
                 .flatMap(eservice -> {
                     log.debug("eservice = {}, SIGNALID_ALREADY_EXISTS", eservice);
                     return Mono.error(new PDNDGenericException(ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS, ExceptionTypeEnum.SIGNALID_ALREADY_EXISTS.getMessage()
                             .concat(" ")
-                            .concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN));
+                            .concat(signalRequest.getEserviceId()), HttpStatus.BAD_REQUEST));
                 }).switchIfEmpty(Mono.defer(() ->{
                     log.debug("SignalRequest = {}, push signal", signalRequest);
                     SignalEvent event = signalMapper.toEvent(signalRequest);
