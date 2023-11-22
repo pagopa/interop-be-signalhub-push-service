@@ -40,7 +40,7 @@ public class RestExceptionHandler {
         problem.setDetail(exception.getCause().getMessage());
         problem.setStatus(HttpStatus.BAD_REQUEST.value());
 
-        return Mono.just(ResponseEntity.status(HttpStatus.valueOf(400)).body(problem));
+        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(problem));
 
     }
 
