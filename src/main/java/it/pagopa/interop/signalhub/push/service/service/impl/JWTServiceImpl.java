@@ -1,6 +1,5 @@
 package it.pagopa.interop.signalhub.push.service.service.impl;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
 import it.pagopa.interop.signalhub.push.service.cache.model.JWTCache;
 import it.pagopa.interop.signalhub.push.service.cache.repository.JWTCacheRepository;
@@ -22,9 +21,9 @@ public class JWTServiceImpl implements JWTService {
     private final JWTCacheRepository cacheRepository;
 
     @Override
-    public Mono<DecodedJWT> findByJWT(DecodedJWT jwt) {
+    public Mono<String> findByJWT(String jwt) {
 
-        return this.cacheRepository.findById(jwt.getToken())
+        return this.cacheRepository.findById(jwt)
                 .doOnNext(cache -> log.info("JWT in cache"))
                 .flatMap(jwtCache -> Mono.error(new PDNDGenericException(JWT_NOT_VALID, JWT_NOT_VALID.getMessage(), HttpStatus.FORBIDDEN)))
                 .switchIfEmpty(Mono.defer(() -> {

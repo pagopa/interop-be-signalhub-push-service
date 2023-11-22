@@ -54,11 +54,9 @@ public class JWTFilter implements WebFilter {
 
         return Mono.justOrEmpty(exchangeRequest)
                 .doOnNext(exchange -> log.info("Start JWT filter validation"))
-                .flatMap(jwtConverter)
-                .doOnNext(jwt -> log.info("JWT decoded"))
-                .switchIfEmpty(chain.filter(exchangeRequest).then(Mono.empty()))
                 .doOnNext(jwt -> log.info("JWT is valid ?"))
-                .flatMap(jwtRepository::findByJWT)
+                .flatMap(jwtConverter)
+                .switchIfEmpty(chain.filter(exchangeRequest).then(Mono.empty()))
                 .doOnNext(jwt -> log.info("JWT is valid"))
                 .map(JWTUtil::getPurposeClaim)
                 .flatMap(interopService::getPrincipalFromPurposeId)

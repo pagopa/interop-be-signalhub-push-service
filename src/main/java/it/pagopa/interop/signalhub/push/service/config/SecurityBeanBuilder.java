@@ -5,6 +5,7 @@ import com.auth0.jwk.JwkProviderBuilder;
 import it.pagopa.interop.signalhub.push.service.auth.JWTAuthManager;
 import it.pagopa.interop.signalhub.push.service.auth.JWTConverter;
 import it.pagopa.interop.signalhub.push.service.auth.PrincipalAgreementValidator;
+import it.pagopa.interop.signalhub.push.service.service.JWTService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +25,8 @@ public class SecurityBeanBuilder {
     }
 
     @Bean
-    public JWTConverter getJwtConverter(JwkProvider jwkProvider, SignalHubPushConfig signalHubPushConfig){
-        return new JWTConverter(jwkProvider, signalHubPushConfig);
+    public JWTConverter getJwtConverter(JwkProvider jwkProvider, SignalHubPushConfig signalHubPushConfig, JWTService jwtCacheService){
+        return new JWTConverter(jwtCacheService, jwkProvider, signalHubPushConfig);
     }
 
     @Bean

@@ -11,6 +11,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import it.pagopa.interop.signalhub.push.service.config.SignalHubPushConfig;
 import it.pagopa.interop.signalhub.push.service.exception.JWTException;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
+import it.pagopa.interop.signalhub.push.service.service.JWTService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,7 @@ import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEn
 @AllArgsConstructor
 public class JWTConverter implements Function<ServerWebExchange, Mono<DecodedJWT>> {
     private static final String TYPE = "at+jwt";
-
+    private final JWTService jwtRepository;
     private final JwkProvider jwkProvider;
     private final SignalHubPushConfig signalHubPushConfig;
 
@@ -45,6 +46,7 @@ public class JWTConverter implements Function<ServerWebExchange, Mono<DecodedJWT
                 .switchIfEmpty(Mono.error(new PDNDGenericException(JWT_NOT_PRESENT, JWT_NOT_PRESENT.getMessage(), HttpStatus.FORBIDDEN)))
                 .map(JWTUtil.getBearerValue())
                 .filter(token -> !token.isEmpty())
+                .flatMap(jwtRepository::findByJWT)
                 .switchIfEmpty(Mono.error(new PDNDGenericException(JWT_NOT_PRESENT, JWT_NOT_PRESENT.getMessage(), HttpStatus.FORBIDDEN)))
                 .map(JWTUtil.decodeJwt())
                 .filter(fieldsCheck())
