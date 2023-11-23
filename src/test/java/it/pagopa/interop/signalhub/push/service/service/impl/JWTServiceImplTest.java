@@ -31,7 +31,7 @@ class JWTServiceImplTest {
     void findByJWTButNotFoundInCache() {
         DecodedJWT jwt = JWT.decode("eyJhbGciOiJIUzI1NiJ9.eyJvYmplY3QiOnsibmFtZSI6ImpvaG4ifX0.lrU1gZlOdlmTTeZwq0VI-pZx2iV46UWYd5-lCjy6-c4");
         Mockito.when(cacheRepository.findById(Mockito.any())).thenReturn(Mono.empty());
-        assertNotNull(jwtService.findByJWT(jwt).block());
+        assertNotNull(jwtService.findByJWT(String.valueOf(jwt)).block());
     }
 
     @Test
@@ -39,7 +39,7 @@ class JWTServiceImplTest {
         DecodedJWT jwt = JWT.decode("eyJhbGciOiJIUzI1NiJ9.eyJvYmplY3QiOnsibmFtZSI6ImpvaG4ifX0.lrU1gZlOdlmTTeZwq0VI-pZx2iV46UWYd5-lCjy6-c4");
         Mockito.when(cacheRepository.findById(Mockito.any())).thenReturn(Mono.just(new JWTCache("123")));
 
-        StepVerifier.create(jwtService.findByJWT(jwt))
+        StepVerifier.create(jwtService.findByJWT(String.valueOf(jwt)))
                 .expectErrorMatches((ex) -> {
                     assertTrue(ex instanceof PDNDGenericException);
                     assertEquals(ExceptionTypeEnum.JWT_NOT_VALID, ((PDNDGenericException) ex).getExceptionType());

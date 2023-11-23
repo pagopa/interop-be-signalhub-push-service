@@ -55,7 +55,6 @@ class JWTFilterTest {
         WebFilterChain filterChain = filterExchange -> Mono.empty();
 
         Mockito.when(jwtConverter.apply(Mockito.any())).thenReturn(Mono.just(jwt));
-        Mockito.when(jwtRepository.findByJWT(Mockito.any())).thenReturn(Mono.just(jwt ));
         Mockito.when(interopService.getPrincipalFromPurposeId(Mockito.any()))
                         .thenReturn(Mono.just(BeanBuilder.getPrincipal()));
         Mockito.when(principalAgreementValidator.test(BeanBuilder.getPrincipal()))
