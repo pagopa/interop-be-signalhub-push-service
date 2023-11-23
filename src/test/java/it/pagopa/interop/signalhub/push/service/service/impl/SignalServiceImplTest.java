@@ -55,7 +55,7 @@ class SignalServiceImplTest {
         StepVerifier.create(signalService.pushSignal("1234", signalRequest))
                 .expectErrorMatches((ex) -> {
                     assertTrue(ex instanceof PDNDGenericException);
-                    assertEquals(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ((PDNDGenericException) ex).getExceptionType());
+                    assertEquals(ExceptionTypeEnum.UNAUTHORIZED, ((PDNDGenericException) ex).getExceptionType());
                     return true;
                 }).verify();
     }

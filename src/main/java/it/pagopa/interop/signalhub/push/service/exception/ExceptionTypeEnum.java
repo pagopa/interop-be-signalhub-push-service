@@ -8,6 +8,7 @@ public enum ExceptionTypeEnum {
     CORRESPONDENCE_NOT_FOUND("CORRESPONDENCE_NOT_FOUND", "Non risulta corrispondenza tra l'erogatore e l'id del servizio: "),
     JWT_NOT_VALID("JWT_NOT_VALID", "Il voucher passato non è valido"),
     JWT_UNAUTHORIZED("JWT_UNAUTHORIZED", "Il voucher passato non è autorizzato a procedere"),
+    UNAUTHORIZED("NOT_AUTHORIZED", "User not authorized"),
     JWT_TYPE_INCORRECT("JWT_TYPE_INCORRECT", "Il voucher passato non è del tipo atteso"),
     JWT_EMPTY("JWT_EMPTY", "Il voucher passato è vuoto"),
     JWT_NOT_PRESENT("JWT_NOT_PRESENT", "Il voucher non è stato passato"),

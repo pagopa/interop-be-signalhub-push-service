@@ -31,7 +31,7 @@ public class SignalServiceImpl implements SignalService {
     @Override
     public Mono<Signal> pushSignal(String producerId, SignalRequest signalRequest) {
         return organizationEService.getEService(signalRequest.getEserviceId(), producerId)
-                .switchIfEmpty(Mono.error(new PDNDGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage().concat(signalRequest.getEserviceId()), HttpStatus.FORBIDDEN)))
+                .switchIfEmpty(Mono.error(new PDNDGenericException(ExceptionTypeEnum.UNAUTHORIZED, ExceptionTypeEnum.UNAUTHORIZED.getMessage(), HttpStatus.FORBIDDEN)))
                 .flatMap(eservice -> signalRepository.findBySignalIdAndEServiceId(signalRequest.getSignalId(), signalRequest.getEserviceId()))
                 .flatMap(eservice -> {
                     log.debug("eservice = {}, SIGNALID_ALREADY_EXISTS", eservice);
