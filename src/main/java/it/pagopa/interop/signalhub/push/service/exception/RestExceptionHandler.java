@@ -39,9 +39,7 @@ public class RestExceptionHandler {
 
         ProblemError problemError= new ProblemError();
         problemError.setCode("INVALID_INPUT");
-
-        if(exception.getCause()!= null) problemError.setDetail(exception.getCause().getMessage());
-        else problemError.setDetail(exception.getMessage());
+        problemError.setDetail(exception.getCause()!= null ? exception.getCause().getMessage() : exception.getMessage());
 
         List<ProblemError> errors= new ArrayList<>();
         errors.add(problemError);
