@@ -32,7 +32,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .doOnNext(cache -> log.info("[{} - {}] EService in cache", eserviceId, producerId))
                 .flatMap(eServiceCache -> {
                     if(eServiceCache.getState().equalsIgnoreCase(Const.STATE_PUBLISHED)) return Mono.just(eServiceCache);
-                    return Mono.error(new PDNDGenericException(UNAUTHORIZED, UNAUTHORIZED.getMessage().concat(eserviceId), HttpStatus.FORBIDDEN));
+                    return Mono.error(new PDNDGenericException(UNAUTHORIZED, UNAUTHORIZED.getMessage().concat(" ").concat(eserviceId), HttpStatus.FORBIDDEN));
                 })
                 .switchIfEmpty(Mono.defer(() -> {
                     log.info("[{} - {}] EService no in cache",  eserviceId, producerId);
@@ -48,7 +48,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return this.eServiceRepository.findByProducerIdAndEServiceIdAndState(eserviceId, producerId, Const.STATE_PUBLISHED)
                 .switchIfEmpty(Mono.defer(()-> {
                     log.info("[{} - {}] EService not founded into DB",  eserviceId, producerId);
-                    return Mono.error(new PDNDGenericException(UNAUTHORIZED, UNAUTHORIZED.getMessage().concat(eserviceId), HttpStatus.FORBIDDEN));
+                    return Mono.error(new PDNDGenericException(UNAUTHORIZED, UNAUTHORIZED.getMessage().concat(" ").concat(eserviceId), HttpStatus.FORBIDDEN));
                 }))
                 .doOnNext(entity ->
                         log.info("[{} - {}] EService founded into DB",  eserviceId, producerId)
