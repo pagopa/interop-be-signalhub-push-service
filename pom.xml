@@ -212,7 +212,11 @@
 			<version>5.15.0</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>3.1.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -253,16 +257,17 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.10</version>
 				<configuration>
-
 					<excludes>
-						<exclude>it/pagopa/interop/signalhub/push/service/dto/*</exclude>
-						<exclude>it/pagopa/interop/signalhub/push/service/dto/**</exclude>
-						<exclude>it/pagopa/interop/signalhub/push/service/rest/v1/api/*</exclude>
-						<exclude>it/pagopa/interop/signalhub/push/service/rest/v1/api/**</exclude>
-						<exclude>it/pagopa/interop/signalhub/push/service/generated/*</exclude>
-						<exclude>it/pagopa/interop/signalhub/push/service/generated/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/rest/v1/api/**</exclude>
+						<exclude>**/generated/**</exclude>
+						<exclude>**/config/**</exclude>
+						<exclude>**/entities/**</exclude>
+						<exclude>**/queue/model/**</exclude>
+						<exclude>**/cache/model/**</exclude>
+						<exclude>**/utils/**</exclude>
+						<exclude>**/SignalHubPushServiceApplication.class</exclude>
 					</excludes>
-
 				</configuration>
 				<executions>
 					<execution>
