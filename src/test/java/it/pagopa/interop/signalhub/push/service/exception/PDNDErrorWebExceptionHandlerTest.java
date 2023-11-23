@@ -47,6 +47,6 @@ class PDNDErrorWebExceptionHandlerTest {
         Mockito.when(helper.handle(Mockito.any())).thenReturn(problem);
         Mockito.when(objectMapper.writeValueAsBytes(Mockito.any())).thenReturn(new byte[1]);
 
-        assertNotNull(pdndErrorWebExceptionHandler.handle(exchange, new PDNDGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage())));
+        assertNotNull(pdndErrorWebExceptionHandler.handle(exchange, new PDNDGenericException(ExceptionTypeEnum.UNAUTHORIZED, ExceptionTypeEnum.UNAUTHORIZED.getMessage())));
     }
 }

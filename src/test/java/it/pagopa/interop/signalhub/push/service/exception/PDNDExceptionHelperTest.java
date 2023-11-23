@@ -10,7 +10,7 @@ class PDNDExceptionHelperTest {
     void handle() {
         PDNDExceptionHelper pdndExceptionHelper= new PDNDExceptionHelper();
         assertNotNull(pdndExceptionHelper.handle(new Throwable()));
-        assertNotNull(pdndExceptionHelper.handle(new PDNDGenericException(ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND, ExceptionTypeEnum.CORRESPONDENCE_NOT_FOUND.getMessage())));
+        assertNotNull(pdndExceptionHelper.handle(new PDNDGenericException(ExceptionTypeEnum.UNAUTHORIZED, ExceptionTypeEnum.UNAUTHORIZED.getMessage())));
     }
 
     @Test

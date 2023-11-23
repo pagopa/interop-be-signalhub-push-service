@@ -54,9 +54,18 @@ public class RestExceptionHandler {
     public Mono<ResponseEntity<Problem>> handleResponseEntityException(final PDNDGenericException exception){
         log.warn(exception.toString());
         final Problem problem = new Problem();
-        problem.setTitle(exception.getExceptionType().getTitle());
-        problem.setDetail(exception.getMessage());
+        problem.setTitle(HttpStatus.FORBIDDEN.name());
+        problem.setDetail(HttpStatus.valueOf(HttpStatus.FORBIDDEN.value()).getReasonPhrase());
         problem.setStatus(exception.getHttpStatus().value());
+
+        ProblemError problemError= new ProblemError();
+        problemError.setCode(exception.getExceptionType().getTitle());
+        problemError.setDetail(exception.getMessage());
+
+        List<ProblemError> errors= new ArrayList<>();
+        errors.add(problemError);
+
+        problem.setErrors(errors);
 
         return Mono.just(ResponseEntity.status(exception.getHttpStatus()).body(problem));
     }

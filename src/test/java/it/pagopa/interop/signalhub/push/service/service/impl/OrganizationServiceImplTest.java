@@ -43,7 +43,7 @@ class OrganizationServiceImplTest {
         StepVerifier.create(organizationService.getEService("123", "1234"))
                 .expectErrorMatches((ex) -> {
                     assertTrue(ex instanceof PDNDGenericException);
-                    assertEquals(ExceptionTypeEnum.ESERVICE_NOT_FOUND,((PDNDGenericException) ex).getExceptionType());
+                    assertEquals(ExceptionTypeEnum.UNAUTHORIZED,((PDNDGenericException) ex).getExceptionType());
                     return true;
 
                 }).verify();
@@ -79,7 +79,7 @@ class OrganizationServiceImplTest {
         StepVerifier.create(organizationService.getEService("123", "1234"))
                 .expectErrorMatches((ex) -> {
                     assertTrue(ex instanceof PDNDGenericException);
-                    assertEquals(ExceptionTypeEnum.ESERVICE_STATUS_IS_NOT_PUBLISHED,((PDNDGenericException) ex).getExceptionType());
+                    assertEquals(ExceptionTypeEnum.UNAUTHORIZED,((PDNDGenericException) ex).getExceptionType());
                     return true;
 
                 }).verify();

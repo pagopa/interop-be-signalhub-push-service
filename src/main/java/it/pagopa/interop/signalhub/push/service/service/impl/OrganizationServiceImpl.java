@@ -13,8 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.ESERVICE_NOT_FOUND;
-import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.ESERVICE_STATUS_IS_NOT_PUBLISHED;
+import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.*;
 
 
 @Slf4j
@@ -33,7 +32,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .doOnNext(cache -> log.info("[{} - {}] EService in cache", eserviceId, producerId))
                 .flatMap(eServiceCache -> {
                     if(eServiceCache.getState().equalsIgnoreCase(Const.STATE_PUBLISHED)) return Mono.just(eServiceCache);
-                    return Mono.error(new PDNDGenericException(ESERVICE_STATUS_IS_NOT_PUBLISHED, ESERVICE_STATUS_IS_NOT_PUBLISHED.getMessage().concat(eserviceId), HttpStatus.FORBIDDEN));
+                    return Mono.error(new PDNDGenericException(UNAUTHORIZED, UNAUTHORIZED.getMessage().concat(eserviceId), HttpStatus.FORBIDDEN));
                 })
                 .switchIfEmpty(Mono.defer(() -> {
                     log.info("[{} - {}] EService no in cache",  eserviceId, producerId);
@@ -49,7 +48,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return this.eServiceRepository.findByProducerIdAndEServiceIdAndState(eserviceId, producerId, Const.STATE_PUBLISHED)
                 .switchIfEmpty(Mono.defer(()-> {
                     log.info("[{} - {}] EService not founded into DB",  eserviceId, producerId);
-                    return Mono.error(new PDNDGenericException(ESERVICE_NOT_FOUND, ESERVICE_NOT_FOUND.getMessage().concat(eserviceId), HttpStatus.FORBIDDEN));
+                    return Mono.error(new PDNDGenericException(UNAUTHORIZED, UNAUTHORIZED.getMessage().concat(eserviceId), HttpStatus.FORBIDDEN));
                 }))
                 .doOnNext(entity ->
                         log.info("[{} - {}] EService founded into DB",  eserviceId, producerId)
