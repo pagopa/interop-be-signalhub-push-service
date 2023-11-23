@@ -13,20 +13,24 @@ import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEn
 @Component
 public class PDNDExceptionHelper {
 
-
-
     public Problem handle(Throwable ex){
         ProblemBuilder builder = ProblemBuilder.builder();
 
-        if (ex instanceof PDNDGenericException casted) {
-            return builder.addExceptionType(casted.getExceptionType())
-                    .addStatusCode(casted.getHttpStatus())
-                    .setMessage(casted.getMessage())
+        if (ex instanceof PDNDGenericException casted ) {
+            return builder.addStatusCode(casted.getHttpStatus())
+                    .addProblemError(casted.getExceptionType().getTitle(), casted.getExceptionType().getMessage())
+                    .build();
+
+        }
+
+        if (ex instanceof JWTException casted) {
+            return builder.addStatusCode(casted.getHttpStatus())
+                    .addProblemError(casted.getExceptionType().getTitle(), casted.getExceptionType().getMessage())
                     .build();
         }
 
-        return builder.addExceptionType(GENERIC_ERROR)
-                .addStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
+        return builder.addStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
+                .addProblemError(GENERIC_ERROR.getTitle(), GENERIC_ERROR.getMessage())
                 .build();
 
     }
