@@ -13,4 +13,5 @@ import org.springframework.context.annotation.Configuration;
 public class SignalHubPushConfig {
     private String id;
     private String audience;
+    private String headerTraceIdKey;
 }

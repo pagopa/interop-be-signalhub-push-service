@@ -23,7 +23,6 @@ import java.util.List;
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
-
 public class RestExceptionHandler {
 
     @Autowired
