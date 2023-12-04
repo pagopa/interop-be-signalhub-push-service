@@ -116,6 +116,105 @@ paths:
                 type: integer
               description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
 
+  /push-signal-temp:
+    post:
+      tags:
+        - Gateway
+      summary: Insert signals
+      description: Insert a signal
+      operationId: pushSignalTemp
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignalRequestTemp'
+      responses:
+        '200':
+          description: signal inteserted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Signal'
+          headers:
+            'X-Rate-Limit-Limit':
+              schema:
+                type: integer
+              description: Max allowed requests within time interval
+            'X-Rate-Limit-Remaining':
+              schema:
+                type: integer
+              description: Remaining requests within time interval
+            'X-Rate-Limit-Interval':
+              schema:
+                type: integer
+              description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
+        '400':
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          headers:
+            'X-Rate-Limit-Limit':
+              schema:
+                type: integer
+              description: Max allowed requests within time interval
+            'X-Rate-Limit-Remaining':
+              schema:
+                type: integer
+              description: Remaining requests within time interval
+            'X-Rate-Limit-Interval':
+              schema:
+                type: integer
+              description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          headers:
+            'X-Rate-Limit-Limit':
+              schema:
+                type: integer
+              description: Max allowed requests within time interval
+            'X-Rate-Limit-Remaining':
+              schema:
+                type: integer
+              description: Remaining requests within time interval
+            'X-Rate-Limit-Interval':
+              schema:
+                type: integer
+              description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
+        '429':
+          description: Too Many Requests
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          headers:
+            'X-Rate-Limit-Limit':
+              schema:
+                type: integer
+              description: Max allowed requests within time interval
+            'X-Rate-Limit-Remaining':
+              schema:
+                type: integer
+              description: Remaining requests within time interval
+            'X-Rate-Limit-Interval':
+              schema:
+                type: integer
+              description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
+
 components:
   schemas:
     SignalRequest:
@@ -152,6 +251,39 @@ components:
         - eserviceId
         - objectType
         - signalId
+    SignalRequestTemp:
+      type: object
+      additionalProperties: false
+      title: SignalRequestTemp
+      description: represents the details of a verified attribute bound to the agreement.
+      properties:
+        signalType:
+          $ref: '#/components/schemas/SignalType'
+        objectId:
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ObjectTemp'
+        objectType:
+          type: string
+          description: object type. In case of seed update this claim must by set to 'seedUpdate'
+          pattern: '^[a-zA-Z0-9\s\-_]+$'
+          minLength: 0
+          maxLength: 500
+        eserviceId:
+          type: string
+          description: eservice Id
+        signalId:
+          type: integer
+          format: int64
+          example: 1
+          description: unique index of eserviceId
+      required:
+        - objectId
+        - signalType
+        - eserviceId
+        - objectType
+        - signalId
     SignalType:
       type: string
       description: type of signal
@@ -160,6 +292,19 @@ components:
         - UPDATE
         - DELETE
         - SEEDUPDATE
+    ObjectTemp:
+      type: object
+      description: ObjectTemp
+      properties:
+        correlationId:
+          type: string
+          description: correlation Id
+        objectId:
+          type: string
+          description: object id
+          pattern: '^[a-zA-Z0-9\-_]+$'
+          minLength: 0
+          maxLength: 500
     Problem:
       properties:
         type:
