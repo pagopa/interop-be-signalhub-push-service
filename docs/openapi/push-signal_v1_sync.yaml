@@ -116,13 +116,13 @@ paths:
                 type: integer
               description: Time interval in milliseconds. Allowed requests will be constantly replenished during the interval. At the end of the interval the max allowed requests will be available
 
-  /push-signal-temp:
+  /push-signal-list:
     post:
       tags:
         - Gateway
       summary: Insert signals
       description: Insert a signal
-      operationId: pushSignalTemp
+      operationId: pushSignalList
       security:
         - bearerAuth: []
       requestBody:
@@ -130,7 +130,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SignalRequestTemp'
+              $ref: '#/components/schemas/SignalConsumerRequest'
       responses:
         '200':
           description: signal inteserted
@@ -251,19 +251,19 @@ components:
         - eserviceId
         - objectType
         - signalId
-    SignalRequestTemp:
+    SignalConsumerRequest:
       type: object
       additionalProperties: false
-      title: SignalRequestTemp
+      title: SignalConsumerRequest
       description: represents the details of a verified attribute bound to the agreement.
       properties:
         signalType:
           $ref: '#/components/schemas/SignalType'
-        objectId:
+        consumers:
           type: array
           minItems: 0
           items:
-            $ref: '#/components/schemas/ObjectTemp'
+            $ref: '#/components/schemas/ConsumerItem'
         objectType:
           type: string
           description: object type. In case of seed update this claim must by set to 'seedUpdate'
@@ -292,13 +292,13 @@ components:
         - UPDATE
         - DELETE
         - SEEDUPDATE
-    ObjectTemp:
+    ConsumerItem:
       type: object
-      description: ObjectTemp
+      description: ConsumerItem
       properties:
-        correlationId:
+        consumerId:
           type: string
-          description: correlation Id
+          description: consumerId
         objectId:
           type: string
           description: object id
