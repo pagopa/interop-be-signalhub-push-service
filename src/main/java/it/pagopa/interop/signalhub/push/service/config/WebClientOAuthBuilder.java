@@ -76,7 +76,7 @@ public class WebClientOAuthBuilder {
         converter.setJwtClientAssertionCustomizer(context -> {
             context.getHeaders().header("typ", "JWT");
             context.getHeaders().header("kid", rsaKey.getKeyID());
-            context.getClaims().claim("aud", "auth.uat.interop.pagopa.it/client-assertion");
+            context.getClaims().claim("aud", props.getAudience());
         });
 
         tokenResponseClient.addParametersConverter(converter);
