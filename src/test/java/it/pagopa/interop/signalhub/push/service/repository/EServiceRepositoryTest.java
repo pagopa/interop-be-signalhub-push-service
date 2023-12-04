@@ -2,14 +2,11 @@ package it.pagopa.interop.signalhub.push.service.repository;
 
 import it.pagopa.interop.signalhub.push.service.config.BaseTest;
 import it.pagopa.interop.signalhub.push.service.entities.EService;
-import org.junit.jupiter.api.AfterEach;
+
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 
@@ -17,10 +14,9 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
 
     private static final String correctEservice = "BC-eservice";
     private static final String correctProducer = "BC-producer";
+    private static final String correctDescriptor = "BC-descriptor";
     private static final String correctState = "PUBLISHED";
     private static final String incorrectState = "ACTIVE";
-    private EService entitySaved;
-
     @Autowired
     private EServiceRepository eServiceRepository;
 
@@ -33,6 +29,7 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
                         correctProducer,
                         incorrectState).collectList().block();
 
+        Assertions.assertNotNull(entity);
         Assertions.assertTrue(entity.isEmpty());
     }
 
@@ -45,17 +42,19 @@ class EServiceRepositoryTest extends BaseTest.WithR2DBC {
                         correctProducer,
                         correctState).collectList().block();
 
+        Assertions.assertNotNull(entity);
         Assertions.assertFalse(entity.isEmpty());
-        //Assertions.assertEquals(entitySaved, entity.get(0));
+        Assertions.assertEquals(getEntity(), entity.get(0));
     }
 
 
     private EService getEntity(){
-        entitySaved = new EService();
+        EService entitySaved = new EService();
         entitySaved.setEserviceId(correctEservice);
         entitySaved.setProducerId(correctProducer);
-        entitySaved.setDescriptorId("1234");
+        entitySaved.setDescriptorId(correctDescriptor);
         entitySaved.setState(correctState);
+        entitySaved.setEventId(12L);
         return entitySaved;
     }
 

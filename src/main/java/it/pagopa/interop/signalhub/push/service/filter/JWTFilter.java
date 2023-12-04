@@ -9,8 +9,12 @@ import it.pagopa.interop.signalhub.push.service.service.InteropService;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,10 +36,10 @@ import java.util.List;
 import static it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum.*;
 
 @Profile("!test")
-@Slf4j
 @AllArgsConstructor
 @Configuration
 public class JWTFilter implements WebFilter {
+    private static final Logger log = LoggerFactory.getLogger(JWTFilter.class);
     private final JWTConverter jwtConverter;
     private final PrincipalAgreementValidator principalAgreementValidator;
     private final ReactiveAuthenticationManager reactiveAuthManager;
