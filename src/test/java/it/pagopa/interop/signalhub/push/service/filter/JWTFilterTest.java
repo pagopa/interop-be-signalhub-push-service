@@ -52,6 +52,7 @@ class JWTFilterTest {
                         .get("/your-url")
                         .header("Authorization", "Bearer ".concat(jwt.getToken())));
 
+
         WebFilterChain filterChain = filterExchange -> Mono.empty();
 
         Mockito.when(jwtConverter.apply(Mockito.any())).thenReturn(Mono.just(jwt));

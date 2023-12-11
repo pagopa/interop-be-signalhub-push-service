@@ -29,7 +29,7 @@ public class RestExceptionHandler {
     private ProblemErrorMapper problemErrorMapper;
 
     @ExceptionHandler(JsonMappingException.class)
-    public Mono<ResponseEntity<Problem>> handle(JsonMappingException exception) {
+    public Mono<ResponseEntity<Problem>> handleJsonMappingException(JsonMappingException exception) {
         log.error("Returning HTTP 400 Bad Request {}", exception.getMessage());
         final Problem problem = new Problem();
         problem.setTitle(HttpStatus.BAD_REQUEST.name());
@@ -76,7 +76,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(WebExchangeBindException.class)
-    public Mono<ResponseEntity<Problem>> handleResponseEntityException(final WebExchangeBindException exception){
+    public Mono<ResponseEntity<Problem>> handleWebExchangeBindException(final WebExchangeBindException exception){
         log.warn(exception.toString());
 
         List<ProblemError> errors= new ArrayList<>();
