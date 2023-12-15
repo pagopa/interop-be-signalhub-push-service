@@ -6,6 +6,7 @@ import it.pagopa.interop.signalhub.push.service.dto.SignalType;
 import it.pagopa.interop.signalhub.push.service.entities.EService;
 import it.pagopa.interop.signalhub.push.service.exception.ExceptionTypeEnum;
 import it.pagopa.interop.signalhub.push.service.exception.PDNDGenericException;
+import it.pagopa.interop.signalhub.push.service.generated.openapi.client.interop.model.v1.Event;
 import it.pagopa.interop.signalhub.push.service.mapper.SignalMapper;
 import it.pagopa.interop.signalhub.push.service.queue.model.SignalEvent;
 import it.pagopa.interop.signalhub.push.service.queue.producer.InternalSqsProducer;
@@ -83,13 +84,14 @@ class SignalServiceImplTest {
         Mockito.when(organizationService.getEService(Mockito.any(), Mockito.any())).thenReturn(Mono.just(eService));
         Mockito.when(signalRepository.findBySignalIdAndEServiceId(Mockito.any(), Mockito.any())).thenReturn(Mono.empty());
         Mockito.when(internalSqsProducer.push(Mockito.any())).thenReturn(Mono.just(new SignalEvent()));
+        Mockito.when(signalMapper.toEvent(Mockito.any())).thenReturn(new SignalEvent());
 
         assertNotNull(signalService.pushSignal("test", signalRequest).block());
     }
 
     private SignalRequest getSignalRequest(){
         SignalRequest request = new SignalRequest();
-        request.setSignalType(SignalType.CREATE);
+        request.setSignalType(SignalType.SEEDUPDATE);
         request.setEserviceId("123");
         request.setSignalId(1L);
         request.setObjectId("test");
