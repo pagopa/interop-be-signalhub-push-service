@@ -263,6 +263,7 @@
 						<exclude>**/queue/model/**</exclude>
 						<exclude>**/cache/model/**</exclude>
 						<exclude>**/utils/**</exclude>
+						<exclude>**/logging/**</exclude>
 						<exclude>**/SignalHubPushServiceApplication.class</exclude>
 					</excludes>
 				</configuration>
