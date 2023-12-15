@@ -1,0 +1,45 @@
+package it.pagopa.interop.signalhub.push.service.entities;
+
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+import java.sql.Timestamp;
+import java.time.Instant;
+
+@Getter
+@Setter
+@ToString
+@Table("SIGNAL")
+public class Signal {
+
+    @Id
+    @Column("id")
+    private String id;
+
+    @Column("eservice_id")
+    private String eserviceId;
+
+    @Column("correlation_id")
+    private String correlationId;
+
+    @Column("signal_Id")
+    private Long signalId;
+
+    @Column("object_id")
+    private String objectId;
+
+    @Column("object_type")
+    private String objectType;
+
+    @Column("signal_type")
+    private String signalType;
+
+    @Column("tmst_insert")
+    private Instant tmstInsert;
+
+}
